@@ -19,6 +19,17 @@ mydb = dbConnect(MySQL(),
 # dbDisconnect(mydb)
 
 
+# testFunc <- function(matrixList, x, y)
+# {
+#   minusScore <- length(which((matrixList$MoleIndexX == x) & (matrixList$MoleIndexY == y) & (matrixList$Event == "Mole Expired")))
+#   plusScore <- length(which((matrixList$MoleIndexX == x) & (matrixList$MoleIndexY == y) & (matrixList$Event == "Mole Hit")))
+# 
+#   return(plusScore - minusScore)
+# }
+# 
+# GenerateMatrix(xParam = "MoleIndexX", yParam = "MoleIndexY", xLength = 9, yLength = 7, valueParam = "Event", conditions = list(list("Event = 'Mole Expired'", "Event = 'Mole Hit'")), scoringFunction = testFunc)
+
+
 FetchDatas <- function(conditionLists = list(), option = "*")
 {
   queryString = GenerateQuery(conditionLists, option)
@@ -33,6 +44,7 @@ GenerateQuery <- function(conditionLists, option)
   
   if (length(conditionLists) == 0)
   {
+    print(queryString)
     return(queryString)
   }
   
@@ -56,6 +68,7 @@ GenerateQuery <- function(conditionLists, option)
       queryString = paste(queryString, listLink, sep = " ")
     }
   }
+  print(queryString)
   return(queryString)
 }
 
@@ -83,7 +96,7 @@ GenerateSelectChoices <- function(default = "", text = "", fieldName, conditions
   {
     if (is.numeric(fieldList[[i]]))
     {
-      tempList[[paste(text, i, sep = " ")]] <- i
+      tempList[[paste(text, fieldList[[i]], sep = " ")]] <- fieldList[[i]]
     }
     else
     {
@@ -92,4 +105,28 @@ GenerateSelectChoices <- function(default = "", text = "", fieldName, conditions
   }
   return(tempList)
 }
+
+
+GenerateMatrix <- function(xParam = "", xLength = 1, yParam = "", yLength = 1, valueParam = "", conditions = list(), scoringFunction = function(matrixList, x, y){return(0)}, normalized = FALSE)
+{
+  optionString = paste(xParam, yParam, valueParam, sep = ", ")
+  matrixList <- FetchDatas(conditions, optionString)
+  
+  returnMatrix = matrix(nrow = yLength, ncol = xLength, data = NA)
+  
+  maxScore = 1
+  minScore = -1
+  
+  for(x in 1:xLength)
+  {
+    for(y in 1:yLength)
+    {
+      score <- scoringFunction(matrixList, x, y)
+      returnMatrix[y, x] <- score
+    }
+  }
+  return(returnMatrix)
+}
+
+
 
