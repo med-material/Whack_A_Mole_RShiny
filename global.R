@@ -18,22 +18,10 @@ mydb = dbConnect(MySQL(),
 # print(GenerateQuery(list()))
 # dbDisconnect(mydb)
 
-
-# testFunc <- function(matrixList, x, y)
-# {
-#   minusScore <- length(which((matrixList$MoleIndexX == x) & (matrixList$MoleIndexY == y) & (matrixList$Event == "Mole Expired")))
-#   plusScore <- length(which((matrixList$MoleIndexX == x) & (matrixList$MoleIndexY == y) & (matrixList$Event == "Mole Hit")))
-# 
-#   return(plusScore - minusScore)
-# }
-# 
-# GenerateMatrix(xParam = "MoleIndexX", yParam = "MoleIndexY", xLength = 9, yLength = 7, valueParam = "Event", conditions = list(list("Event = 'Mole Expired'", "Event = 'Mole Hit'")), scoringFunction = testFunc)
-
-
 FetchDatas <- function(conditionLists = list(), option = "*")
 {
   queryString = GenerateQuery(conditionLists, option)
-  return(fetch(dbSendQuery(mydb, queryString)))
+  return(dbGetQuery(mydb, queryString))
 }
 
 
@@ -87,21 +75,54 @@ CountField <- function(fieldName = "*", conditions = list())
 }
 
 
-GenerateSelectChoices <- function(default = "", text = "", fieldName, conditions = list())
+GenerateSelectChoices <- function(default = "", text = "", fieldName, conditions = list(), extraInfo = list())
 {
   tempList <- list()
   tempList[[default]] <- -1
   fieldList <- GetField(fieldName, FetchDatas(conditions, paste("DISTINCT", fieldName)))
+  extraTextString = ""
+  
+  if(length(fieldList) == 0)
+    return(tempList)
+  
   for(i in 1:length(fieldList))
   {
+    if(length(extraInfo) != 0)
+    {
+      extraText <- list()
+      for(j in 1:length(extraInfo))
+      {
+        tempContitions <- conditions
+        tempContitions[[length(tempContitions) + 1]] <- paste(toString(fieldName), " = ", fieldList[[i]], sep = "")
+        extraText[[j]] <- GetField(extraInfo[[j]], FetchDatas(tempContitions, paste("DISTINCT", extraInfo[[j]])))
+        print(extraText)
+      }
+      
+      
+      for(j in 1:length(extraText))
+      {
+        extraTextString <- paste(extraTextString, extraText[[j]], sep = "")
+      }
+    }
+    
+    resultString <- ""
+    
     if (is.numeric(fieldList[[i]]))
     {
-      tempList[[paste(text, fieldList[[i]], sep = " ")]] <- fieldList[[i]]
+      resultString <- paste(text, fieldList[[i]], sep = " ")
     }
     else
     {
-      tempList[[fieldList[[i]]]] <- fieldList[[i]]
+      resultString <- fieldList[[i]]
     }
+    
+    if(extraTextString != "")
+    {
+      extraTextString <- paste("(", extraTextString, ")", sep = "")
+      resultString <- paste(resultString, extraTextString, sep = " ")
+    }
+    
+    tempList[[resultString]] <- fieldList[[i]]
   }
   return(tempList)
 }

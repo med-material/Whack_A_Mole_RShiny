@@ -10,27 +10,10 @@ shinyUI(navbarPage(title = "Whack A Mole VR",
                      sidebarLayout(
                        # Inputs
                        sidebarPanel(
-                         selectInput(
-                           "Participants",
-                           label = h3("Participant"),
-                           choices = GenerateSelectChoices("All participants", "Participant", "ParticipantId"),
-                           selected = -1
-                         ),
-                         selectInput(
-                           "Difficulty",
-                           label = h3("Difficulty"),
-                           choices = GenerateSelectChoices("All difficulties", "Difficulty", "GameSpeed"),
-                           selected = -1
-                         ),
-                         conditionalPanel(
-                           "input.Participants != -1",
-                           selectInput(
-                             "Test",
-                             label = h3("Test"),
-                             choices = list("1" = "-1"),
-                             selected = -1
-                           )
-                         ),
+                         uiOutput("Date"),
+                         uiOutput("Participants"),
+                         uiOutput("Difficulty"),
+                         uiOutput("TestId")
                        ),
                        
                        # Outputs
