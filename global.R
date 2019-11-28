@@ -89,19 +89,21 @@ GenerateSelectChoices <- function(default = "", text = "", fieldName, conditions
   {
     if(length(extraInfo) != 0)
     {
+      extraTextString = ""
       extraText <- list()
       for(j in 1:length(extraInfo))
       {
+        print(j)
         tempContitions <- conditions
         tempContitions[[length(tempContitions) + 1]] <- paste(toString(fieldName), " = ", fieldList[[i]], sep = "")
-        extraText[[j]] <- GetField(extraInfo[[j]], FetchDatas(tempContitions, paste("DISTINCT", extraInfo[[j]])))
+        extraText[[j]] <- GetField(extraInfo[[j]], FetchDatas(tempContitions, paste("DISTINCT", extraInfo[[j]])))[[1]]
         print(extraText)
       }
       
       
       for(j in 1:length(extraText))
       {
-        extraTextString <- paste(extraTextString, extraText[[j]], sep = "")
+        extraTextString <- paste(extraTextString, toString(extraText[[j]]), sep = "")
       }
     }
     
@@ -147,6 +149,33 @@ GenerateMatrix <- function(xParam = "", xLength = 1, yParam = "", yLength = 1, v
     }
   }
   return(returnMatrix)
+}
+
+
+CheckPropertyValue <- function(fieldName, conditions = list())
+{
+  propertyValues <- GetField(fieldName, FetchDatas(conditions, paste("DISTINCT", fieldName)))
+  
+  returnString <- ""
+  
+  if(length(propertyValues) == 0)
+  {
+    return("")
+  }
+  
+  for(i in 1:length(propertyValues))
+  {
+    if(i == 1)
+    {
+      returnString <- propertyValues[[1]]
+    }
+    else
+    {
+      returnString <- paste(returnString, propertyValues[[i]], sep = " / ")
+    }
+  }
+  print(returnString)
+  return(returnString)
 }
 
 

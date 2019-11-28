@@ -31,18 +31,49 @@ shinyServer(function(input, output, session) {
     label = h3("Test"),
     choices = GenerateSelectChoices(default = "All tests", text = "Test", fieldName = "TestId"))})
   
+  # Init the help texts
+  
+  output$ParticipantTextOutput <- renderText(paste("Participant ID:", CheckPropertyValue("ParticipantId", GenerateFilters()), sep = " "))
+  output$TestTextOutput <- renderText(paste("Test ID:", CheckPropertyValue("TestId", GenerateFilters()), sep = " "))
+  output$DurationTextOutput <- renderText(paste("Game duration:", CheckPropertyValue("GameDuration", GenerateFilters()), sep = " "))
+  output$SpeedTextOutput <- renderText(paste("Game speed:", CheckPropertyValue("GameSpeed", GenerateFilters()), sep = " "))
+  output$MirrorEffectTextOutput <- renderText(paste("Mirror effect:", CheckPropertyValue("MirrorEffect", GenerateFilters()), sep = " "))
+  output$DualLaserTextOutput <- renderText(paste("Dual laser:", CheckPropertyValue("DualTask", GenerateFilters()), sep = " "))
+  output$EyePatchTextOutput <- renderText(paste("Eye patch: ", CheckPropertyValue("EyePatch", GenerateFilters()), sep = " "))
+  output$PrismEffectTextOutput <- renderText(paste("Prism effect:", CheckPropertyValue("PrismEffect", GenerateFilters()), sep = " "))
+  
   # On update of one of the dropdown, update the value of the others
   observeEvent({input$Date
     input$Participants
     input$Difficulty
-    input$Test
-    1}, {UpdateInputs()})
+    input$TestId
+    1}, {
+      tempInitDone = initDone
+      UpdateInputs()
+      if(tempInitDone)
+      {
+        if(input$Participants != -1)
+        {
+          if(input$TestId != -1)
+          {
+            output$ParticipantTextOutput <- renderText(paste("Participant ID:", CheckPropertyValue("ParticipantId", GenerateFilters()), sep = " "))
+            output$TestTextOutput <- renderText(paste("Test ID:", CheckPropertyValue("TestId", GenerateFilters()), sep = " "))
+            output$DurationTextOutput <- renderText(paste("Game duration:", CheckPropertyValue("GameDuration", GenerateFilters()), sep = " "))
+            output$SpeedTextOutput <- renderText(paste("Game speed:", CheckPropertyValue("GameSpeed", GenerateFilters()), sep = " "))
+            output$MirrorEffectTextOutput <- renderText(paste("Mirror effect:", CheckPropertyValue("MirrorEffect", GenerateFilters()), sep = " "))
+            output$DualLaserTextOutput <- renderText(paste("Dual laser:", CheckPropertyValue("DualTask", GenerateFilters()), sep = " "))
+            output$EyePatchTextOutput <- renderText(paste("Eye patch: ", CheckPropertyValue("EyePatch", GenerateFilters()), sep = " "))
+            output$PrismEffectTextOutput <- renderText(paste("Prism effect:", CheckPropertyValue("PrismEffect", GenerateFilters()), sep = " "))
+          }
+        }
+      }
+    })
   
   # Updates the Hit heatmap
   observeEvent({input$Date
     input$Participants
     input$Difficulty
-    input$Test
+    input$TestId
     1}, 
     {
       if(initDone)
@@ -69,7 +100,7 @@ shinyServer(function(input, output, session) {
     })
   
   
-  # Function updating the value of he dropdowns
+  # Function updating the value of the dropdowns
   UpdateInputs <- function()
   {
     if(firstGen)
@@ -81,14 +112,14 @@ shinyServer(function(input, output, session) {
     output$Participants <- renderUI({selectInput(
       "Participants",
       label = h3("Participant"),
-      choices = GenerateSelectChoices(default = "All participants", text = "Participant", fieldName = "ParticipantId", conditions = GenerateFilters(toIgnore = "Participants")), selected = input$Participants)})
+      choices = GenerateSelectChoices(default = "All participants", text = "Participant", fieldName = "ParticipantId", conditions = GenerateFilters(toIgnore = "Participants", ignoreTest = TRUE)), selected = input$Participants)})
     
     if(input$Participants != -1)
     {
       output$TestId <- renderUI({selectInput(
         "TestId",
         label = h3("Test"),
-        choices = GenerateSelectChoices(default = "All tests", text = "Test", fieldName = "TestId", conditions = GenerateFilters(toIgnore = "TestId"), extraInfo = list("Time")), selected = input$TestId)})
+        choices = GenerateSelectChoices(default = "All tests", text = "Test", fieldName = "TestId", conditions = GenerateFilters(toIgnore = "TestId", ignoreTest = TRUE), extraInfo = list("Time")), selected = input$TestId)})
     }
     else
     {
@@ -98,19 +129,19 @@ shinyServer(function(input, output, session) {
     output$Difficulty <- renderUI({selectInput(
       "Difficulty",
       label = h3("Difficulty"),
-      choices = GenerateSelectChoices(default = "All difficulties", text = "Difficulty", fieldName = "GameSpeed", conditions = GenerateFilters(toIgnore = "Difficulty")), selected = input$Difficulty)})
+      choices = GenerateSelectChoices(default = "All difficulties", text = "Difficulty", fieldName = "GameSpeed", conditions = GenerateFilters(toIgnore = "Difficulty", ignoreTest = TRUE)), selected = input$Difficulty)})
     
     output$Date <- renderUI({selectInput(
       "Date",
       label = h3("Date"),
-      choices = GenerateSelectChoices(default = "All dates", text = "", fieldName = "Date", conditions = GenerateFilters(toIgnore = "Date")), selected = input$Date)})
+      choices = GenerateSelectChoices(default = "All dates", text = "", fieldName = "Date", conditions = GenerateFilters(toIgnore = "Date", ignoreTest = TRUE)), selected = input$Date)})
     
     if(!initDone)
       initDone <<- TRUE
   }
   
   # Function generating the filters for the SQL request
-  GenerateFilters <- function(toIgnore = "", filters = list())
+  GenerateFilters <- function(toIgnore = "", filters = list(), ignoreTest = FALSE)
   {
     i = length(filters) + 1
     
@@ -123,14 +154,17 @@ shinyServer(function(input, output, session) {
       }
     }
     
-    if(toIgnore != "TestId")
+    if(!ignoreTest)
     {
-      if (input$Participants != -1)
+      if(toIgnore != "TestId")
       {
-        if (input$TestId != -1)
+        if (input$Participants != -1)
         {
-          filters[[i]] <- list(paste("TestId = ", input$TestId, sep = ""))
-          i = i+1
+          if (input$TestId != -1)
+          {
+            filters[[i]] <- list(paste("TestId = ", input$TestId, sep = ""))
+            i = i+1
+          }
         }
       }
     }

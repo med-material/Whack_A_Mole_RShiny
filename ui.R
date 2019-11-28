@@ -18,9 +18,6 @@ shinyUI(navbarPage(title = "Whack A Mole VR",
                        
                        # Outputs
                        mainPanel(tabsetPanel(
-                         tabPanel("Precision",
-                                  plotlyOutput("plot")
-                         ),
                          tabPanel("Hit location",
                                   selectInput(
                                     "HeatMapDisplay",
@@ -29,7 +26,26 @@ shinyUI(navbarPage(title = "Whack A Mole VR",
                                     selected = -1
                                   ),
                                   plotlyOutput("PrecisionHeatMap")
+                         ),
+                         tabPanel("Precision",
+                                  plotlyOutput("plot")
                          )
-                       ))
+                       ),
+                       hr(),
+                       fluidRow(
+                         column(6,
+                                textOutput("ParticipantTextOutput"),
+                                textOutput("TestTextOutput"),
+                                textOutput("DurationTextOutput"),
+                                textOutput("SpeedTextOutput")
+                                ),
+                         column(6,
+                                textOutput("MirrorEffectTextOutput"),
+                                textOutput("DualLaserTextOutput"),
+                                textOutput("EyePatchTextOutput"),
+                                textOutput("PrismEffectTextOutput")
+                                )
+                       )
+                       )
                      )
                    )))
