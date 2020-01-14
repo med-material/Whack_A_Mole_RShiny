@@ -1,4 +1,5 @@
 library(shiny)
+source("SvgHeadRotation.R")
 
 # Global variables
 firstGen <- TRUE
@@ -6,6 +7,9 @@ initDone <- FALSE
 
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output, session) {
+  
+  output$HeadRotation <-renderUI(tags$div(HTML(SvgHeadRotation()$GetDefaultSvg())))
+  
   output$plot <- renderPlotly({
     plot_ly(mtcars, x = ~mpg, y = ~wt)
   })
@@ -50,6 +54,12 @@ shinyServer(function(input, output, session) {
     1}, {
       tempInitDone = initDone
       UpdateInputs()
+      
+      if(is.null(input$Participants) | is.null(input$TestId)  | is.null(input$Difficulty)  | is.null(input$Date))
+      {
+        return()
+      }
+      
       if(tempInitDone)
       {
         if(input$Participants != -1)
@@ -80,7 +90,7 @@ shinyServer(function(input, output, session) {
       {
         conditionsList <- GenerateFilters(filters = list(list("Event = 'Mole Expired'", "Event = 'Mole Hit'")))
         
-        output$PrecisionHeatMap <- renderPlotly(plot_ly(z = GenerateMatrix(xParam = "MoleIndexX", yParam = "MoleIndexY", xLength = 9, yLength = 7, valueParam = "Event", conditions = conditionsList, scoringFunction = function(matrixList, x, y)
+        output$PrecisionHeatMap <- renderPlotly(plot_ly(z = GenerateMatrix(xParam = "MoleIndexX", yParam = "MoleIndexY", xLength = 11, yLength = 8, valueParam = "Event", conditions = conditionsList, scoringFunction = function(matrixList, x, y)
         {
           minusScore <- length(which((matrixList$MoleIndexX == x) & (matrixList$MoleIndexY == y) & (matrixList$Event == "Mole Expired")))
           plusScore <- length(which((matrixList$MoleIndexX == x) & (matrixList$MoleIndexY == y) & (matrixList$Event == "Mole Hit")))
@@ -106,6 +116,11 @@ shinyServer(function(input, output, session) {
     if(firstGen)
     {
       firstGen <<- FALSE
+      return()
+    }
+    
+    if(is.null(input$Participants) | is.null(input$TestId)  | is.null(input$Difficulty)  | is.null(input$Date))
+    {
       return()
     }
     
@@ -143,6 +158,11 @@ shinyServer(function(input, output, session) {
   # Function generating the filters for the SQL request
   GenerateFilters <- function(toIgnore = "", filters = list(), ignoreTest = FALSE)
   {
+    if(is.null(input$Participants) | is.null(input$TestId)  | is.null(input$Difficulty)  | is.null(input$Date))
+    {
+      return()
+    }
+    
     i = length(filters) + 1
     
     if(toIgnore != "Participants")

@@ -25,7 +25,8 @@ shinyUI(navbarPage(title = "Whack A Mole VR",
                                     choices = list("Hits - Misses" = "-1", "Hits" = "1", "Misses" = "2"),
                                     selected = -1
                                   ),
-                                  plotlyOutput("PrecisionHeatMap")
+                                  plotlyOutput("PrecisionHeatMap"),
+                                  uiOutput("HeadRotation")
                          ),
                          tabPanel("Precision",
                                   plotlyOutput("plot")
