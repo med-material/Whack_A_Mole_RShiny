@@ -1,9 +1,12 @@
 library(RMySQL)
+library(plyr)
+library(ggplot2)
+
 
 my_data <- read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character","character","character","character"))
-print(my_data[1, "host"])
 
 lapply( dbListConnections( dbDriver( drv = "MySQL")), dbDisconnect)
+
 
 mydb = dbConnect(MySQL(),
                  user=my_data[1, "username"],
@@ -13,170 +16,60 @@ mydb = dbConnect(MySQL(),
                  dbname=my_data[1, "dbname"],
                  host=my_data[1, "host"])
 
-# print(FetchDatas(list(list("TargetId = 204"), list("Id=3", "Id=2"))))
-# print(CountField(fieldName = "ParticipantNo"))
-# print(GenerateQuery(list()))
-# dbDisconnect(mydb)
-
-FetchDatas <- function(conditionLists = list(), option = "*")
-{
-  queryString = GenerateQuery(conditionLists, option)
-  return(dbGetQuery(mydb, queryString))
+# RetreiveUniqueColmnVals() Used to get unique values available for a column
+# USAGE:
+#dtest = RetreiveUniqueColmnVals("Email")
+RetreiveUniqueColVals <- function(tablename, column) {
+  queryString = paste("SELECT DISTINCT",column,"FROM",tablename,sep=" ")
+  res = dbSendQuery(mydb, queryString)
+  vals = fetch(res, n=-1)
+  dbClearResult(dbListResults(mydb)[[1]])
+  unlisted_vals = unname(unlist(vals)) # if there are several values, they arrive as a list, so unlist them on arrival.
+  sanitized_vals = gsub("[\r\n]", "", unlisted_vals)
+  return(sanitized_vals) 
 }
 
+all_accounts = RetreiveUniqueColVals("whack_vr_rtii","Email")
 
-GenerateQuery <- function(conditionLists, option)
-{
-  queryString = paste("SELECT", option, sep = " ")
-  queryString = paste(queryString, "FROM whack_vr", sep = " ")
-  
-  if (length(conditionLists) == 0)
-  {
-    print(queryString)
-    return(queryString)
-  }
-  
-  conditionLink = "OR"
-  listLink = "AND"
-  
-  queryString = paste(queryString, "WHERE", sep = " ")
-  
-  for (i in 1:length(conditionLists)){
-    queryString = paste(queryString, "(", sep = "")
-    for (j in 1:length(conditionLists[[i]])){
-      queryString = paste(queryString, conditionLists[[i]][[j]], sep = " ")
-      if (j < length(conditionLists[[i]]))
-      {
-        queryString = paste(queryString, conditionLink, sep = " ")
-      }
-    }
-    queryString = paste(queryString, ")", sep = "")
-    if (i < length(conditionLists))
-    {
-      queryString = paste(queryString, listLink, sep = " ")
-    }
+
+# RetreiveDataSet() Used to query for a specific dataset. 
+# Setting colvalue to NULL retreives all data.
+# USAGE:
+#dtest = RetreiveDataSet("rtii_mar2020","Email","mhel@create.aau.dk")
+RetreiveDataSet <- function(tablename, column, colvalue) {
+  queryString = "SELECT *"
+  queryString = paste(queryString, "FROM",tablename, sep = " ")
+  if (colvalue != "NA") {
+    queryString = paste(queryString, "WHERE",column,"= ",sep=" ")
+    queryString = paste(queryString,"\'",colvalue,"\'",sep="")
   }
   print(queryString)
-  return(queryString)
+  res = dbSendQuery(mydb, queryString)
+  df = fetch(res, n=-1) 
+  dbClearResult(dbListResults(mydb)[[1]])
+  return(df)
 }
 
-
-GetField <- function(fieldName, fetchResult)
-{
-  return(fetchResult[[fieldName]])
-}
-
-
-CountField <- function(fieldName = "*", conditions = list())
-{
-  tempField <- paste("COUNT(DISTINCT ", fieldName, sep = "")
-  tempField <- paste(tempField, ")", sep = "")
-  return(GetField(tempField, FetchDatas(conditions, tempField)))
-}
-
-
-GenerateSelectChoices <- function(default = "", text = "", fieldName, conditions = list(), extraInfo = list())
-{
-  tempList <- list()
-  tempList[[default]] <- -1
-  fieldList <- GetField(fieldName, FetchDatas(conditions, paste("DISTINCT", fieldName)))
-  extraTextString = ""
-  
-  if(length(fieldList) == 0)
-    return(tempList)
-  
-  for(i in 1:length(fieldList))
-  {
-    if(length(extraInfo) != 0)
-    {
-      extraTextString = ""
-      extraText <- list()
-      for(j in 1:length(extraInfo))
-      {
-        print(j)
-        tempContitions <- conditions
-        tempContitions[[length(tempContitions) + 1]] <- paste(toString(fieldName), " = ", fieldList[[i]], sep = "")
-        extraText[[j]] <- GetField(extraInfo[[j]], FetchDatas(tempContitions, paste("DISTINCT", extraInfo[[j]])))[[1]]
-        print(extraText)
-      }
-      
-      
-      for(j in 1:length(extraText))
-      {
-        extraTextString <- paste(extraTextString, toString(extraText[[j]]), sep = "")
-      }
-    }
-    
-    resultString <- ""
-    
-    if (is.numeric(fieldList[[i]]))
-    {
-      resultString <- paste(text, fieldList[[i]], sep = " ")
-    }
-    else
-    {
-      resultString <- fieldList[[i]]
-    }
-    
-    if(extraTextString != "")
-    {
-      extraTextString <- paste("(", extraTextString, ")", sep = "")
-      resultString <- paste(resultString, extraTextString, sep = " ")
-    }
-    
-    tempList[[resultString]] <- fieldList[[i]]
+# RefreshDataSet is a helper function called in the app for refreshing TunnelGoalFitts dataset.
+# Setting colfilter to NULL retreives all data.
+# USAGE:
+# RefreshDataSets("mhel@create.aau.dk")
+RefreshDataSets <- function(colfilter) {
+  if (colfilter == "-1") {
+    # -1 is the default value R Shiny uses on startup.
+    return()
   }
-  return(tempList)
+  # REFRESH REACTION TIME DATASET
+  df<<- RetreiveDataSet("whack_vr_rtii","Email",colfilter)
+  print(nrow(df))
+  df$GameState<<-as.factor(df$GameState)
+  df$GameState<<-factor(df$GameState,levels = c("Stopped", "Playing","Paused"))
+  df$PID <<- df$ParticipantId
+  df$TrialNo <<- df$TestId
+  df$PID <<- as.factor(df$PID)
+  df$TrialNo <<- as.factor(df$TrialNo)
 }
 
 
-GenerateMatrix <- function(xParam = "", xLength = 1, yParam = "", yLength = 1, valueParam = "", conditions = list(), scoringFunction = function(matrixList, x, y){return(0)}, normalized = FALSE)
-{
-  optionString = paste(xParam, yParam, valueParam, sep = ", ")
-  matrixList <- FetchDatas(conditions, optionString)
-  
-  returnMatrix = matrix(nrow = yLength, ncol = xLength, data = NA)
-  
-  maxScore = 1
-  minScore = -1
-  
-  for(x in 1:xLength)
-  {
-    for(y in 1:yLength)
-    {
-      score <- scoringFunction(matrixList, x, y)
-      returnMatrix[y, x] <- score
-    }
-  }
-  return(returnMatrix)
-}
-
-
-CheckPropertyValue <- function(fieldName, conditions = list())
-{
-  propertyValues <- GetField(fieldName, FetchDatas(conditions, paste("DISTINCT", fieldName)))
-  
-  returnString <- ""
-  
-  if(length(propertyValues) == 0)
-  {
-    return("")
-  }
-  
-  for(i in 1:length(propertyValues))
-  {
-    if(i == 1)
-    {
-      returnString <- propertyValues[[1]]
-    }
-    else
-    {
-      returnString <- paste(returnString, propertyValues[[i]], sep = " / ")
-    }
-  }
-  print(returnString)
-  return(returnString)
-}
-
-
+df <- data.frame()
 
