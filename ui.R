@@ -22,7 +22,7 @@ ui <- fluidPage(
 #  subjectChooser ----------------
   tabsetPanel(id = "subjectChooser", type = "tabs",
           
-    tabPanel(value  = "trainingperformance", id = "Goal", strong("Goal Test"),
+    tabPanel(value  = "trainingperformance", id = "trainingperformance", strong("Training Performance"),
         navlistPanel(
           widths = c(4, 8),
           "Choose Visualization:",
@@ -31,7 +31,7 @@ ui <- fluidPage(
               #tags$div(class = "vizcontrols-explainer"),
               #textOutput("averagePerf"),
           ),
-          tabPanel("Mirror Condition Comparison",
+          tabPanel("Mirror Mode Impact",
                    #plotOutput('goalLRPlot')
                    #plotlyOutput("fittsRegPlot"),
                    #tags$div(class = "vizcontrols-explainer"),
