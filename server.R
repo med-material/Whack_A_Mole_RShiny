@@ -14,7 +14,9 @@ options(shiny.maxRequestSize=50*1024^2)
 shinyServer(function(input, output, session) {
     
     df <- reactive ({
-        req(input$fileMeta, input$fileEvent, input$fileSample, input$visButton)
+        validate(need(!is.null(input$fileMeta) && !is.null(input$fileEvent) &&
+                      !is.null(input$fileSample), Msg_nodata()),
+                 need(input$visButton, "Press Visualize to start."))
         LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
     })
     
@@ -27,7 +29,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$timelinePlot <- renderPlotly({
-        validate(need(nrow(df()) > 0, Msg_nodata()))
+        validate(need(df(), Msg_nodata()))
         vis_timeline(df(), input$timestampInput, input$eventInput, input$eventTypeInput,
                      input$contInput, input$ignoreEventInput)
     })
