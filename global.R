@@ -1,7 +1,6 @@
 library(tidyr)
 library(plotly)
 library(lubridate)
-library(gsheet)
 library(dplyr)
 source("utils/loadrawdata.R", local = T)
 source("utils/errorhandling.R", local = T)
