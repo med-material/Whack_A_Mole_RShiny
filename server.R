@@ -24,13 +24,13 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session,"timestampInput", choices = names(df()), selected = "Timestamp", server = FALSE)
         updateSelectizeInput(session,"eventInput", choices = names(df()), selected = "Event", server = FALSE)
         updateSelectizeInput(session,"eventTypeInput", choices = names(df()), selected = "EventType", server = FALSE)
-        updateSelectizeInput(session,"contInput", choices = names(df()), server = FALSE)
+        updateSelectizeInput(session,"contInput", choices = names(df()), selected = c("HeadCameraRotEulerX", "HeadCameraRotEulerY", "HeadCameraRotEulerZ", "HeadCameraPosWorldX","HeadCameraPosWorldY","HeadCameraPosWorldZ"), server = FALSE)
         updateSelectizeInput(session,"ignoreEventInput", choices = unique(df()$Event), selected = c("NoData", "Sample"), server = FALSE)
     })
     
     output$timelinePlot <- renderPlotly({
         validate(need(df(), Msg_nodata()))
-        vis_timeline(df(), input$timestampInput, input$eventInput, input$eventTypeInput,
+        vis_timeline_whack(df(), input$timestampInput, input$eventInput, input$eventTypeInput,
                      input$contInput, input$ignoreEventInput)
     })
 })
