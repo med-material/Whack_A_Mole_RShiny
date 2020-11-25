@@ -6,24 +6,24 @@ library(dplyr)
 
 LoadFromFilePaths <- function(filePathMeta, filePathEvent, filePathSample) {
   print(filePathMeta)
-  dataset_meta <- read.csv(filePathMeta, na.strings="NULL")
-  dataset_event <- read.csv(filePathEvent, na.strings="NULL")
-  dataset_sample <- read.csv(filePathSample, na.strings="NULL")
+  dataset_meta <- read.csv(filePathMeta, na.strings="NULL", sep=";")
+  dataset_event <- read.csv(filePathEvent, na.strings="NULL", sep=";")
+  dataset_sample <- read.csv(filePathSample, na.strings="NULL", sep=";")
   dataset_meta <- PreprocessMeta(dataset_meta)
   dataset <- MergeDatasets(dataset_meta, dataset_event, dataset_sample)
   return(dataset)
 }
 
-LoadFromDirectory <- function(dir, separator) {
+LoadFromDirectory <- function(dir) {
   # Manual Trigger:
-  # dir = "logData/testControllerTrigger"
+  #dir = "logdata"
   datasets = list.files(dir, pattern=paste(".csv",sep=''))
   Metasets = list.files(dir, pattern=paste("Meta",sep=''))
   Eventsets = list.files(dir, pattern=paste("Event",sep=''))
   Samplesets = list.files(dir, pattern=paste("Sample",sep=''))
-  datasets_meta <- lapply(paste(dir, "/", Metasets, sep=''), read.csv, na.strings="NULL")
-  datasets_event <- lapply(paste(dir, "/", Eventsets, sep=''), read.csv, na.strings="NULL")
-  datasets_sample <- lapply(paste(dir, "/", Samplesets, sep=''), read.csv, na.strings="NULL")
+  datasets_meta <- lapply(paste(dir, "/", Metasets, sep=''), read.csv, na.strings="NULL", sep=";")
+  datasets_event <- lapply(paste(dir, "/", Eventsets, sep=''), read.csv, na.strings="NULL", sep=";")
+  datasets_sample <- lapply(paste(dir, "/", Samplesets, sep=''), read.csv, na.strings="NULL", sep=";")
   
   # Preprocess meta dataset
   for (i in 1:length(Metasets)) {
