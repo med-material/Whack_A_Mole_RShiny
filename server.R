@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
         updateSelectizeInput(session,"timestampInput", choices = names(df()), selected = "Timestamp", server = FALSE)
         updateSelectizeInput(session,"eventInput", choices = names(df()), selected = "Event", server = FALSE)
         updateSelectizeInput(session,"eventTypeInput", choices = names(df()), selected = "EventType", server = FALSE)
-        updateSelectizeInput(session,"contInput", choices = names(df()), selected = c("HeadCameraRotEulerX", "HeadCameraRotEulerY", "HeadCameraRotEulerZ", "HeadCameraPosWorldX","HeadCameraPosWorldY","HeadCameraPosWorldZ"), server = FALSE)
+        updateSelectizeInput(session,"contInput", choices = names(df()), selected = c("HeadCameraRotEulerX", "HeadCameraRotEulerY", "HeadCameraRotEulerZ", "HeadCameraPosWorldX","HeadCameraPosWorldY","HeadCameraPosWorldZ", "WorldGazeHitPositionX","WorldGazeHitPositionY","WorldGazeHitPositionZ","MolePositionWorldX","MolePositionWorldY","MolePositionWorldZ"), server = FALSE)
         updateSelectizeInput(session,"ignoreEventInput", choices = unique(df()$Event), selected = c("NoData", "Sample"), server = FALSE)
     })
     

@@ -74,13 +74,19 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
            LeftControllerPosWorldZ = scales::rescale(LeftControllerPosWorldZ, from=c(-5,5), to=c(0,1)))
   
   # Make Gaze Positions between -5 and 5 unity meters to be between 0:1.
+  wall_size = df %>% summarise(
+    left_mole = min(MolePositionWorldX, na.rm=T),
+    right_mole = max(MolePositionWorldX, na.rm=T),
+    up_mole = max(MolePositionWorldY, na.rm=T),
+    down_mole = min(MolePositionWorldY, na.rm=T),
+    close_mole = min(MolePositionWorldZ, na.rm=T),
+    away_mole = max(MolePositionWorldZ, na.rm=T)
+  )
+    
   df <- df %>%
-    mutate(RightControllerPosWorldX = scales::rescale(RightControllerPosWorldX, from=c(-5,5), to=c(0,1)),
-           RightControllerPosWorldY = scales::rescale(RightControllerPosWorldY, from=c(-5,5), to=c(0,1)),
-           RightControllerPosWorldZ = scales::rescale(RightControllerPosWorldZ, from=c(-5,5), to=c(0,1)),
-           LeftControllerPosWorldX = scales::rescale(LeftControllerPosWorldX, from=c(-5,5), to=c(0,1)),
-           LeftControllerPosWorldY = scales::rescale(LeftControllerPosWorldY, from=c(-5,5), to=c(0,1)),
-           LeftControllerPosWorldZ = scales::rescale(LeftControllerPosWorldZ, from=c(-5,5), to=c(0,1)))
+    mutate(WorldGazeHitPositionX = scales::rescale(WorldGazeHitPositionX, from=c(wall_size$left_mole-1,wall_size$right_mole+1), to=c(0,1)),
+           WorldGazeHitPositionY = scales::rescale(WorldGazeHitPositionY, from=c(wall_size$down_mole-1,wall_size$up_mole+1), to=c(0,1)),
+           WorldGazeHitPositionZ = scales::rescale(WorldGazeHitPositionZ, from=c(wall_size$close_mole-1,wall_size$away_mole+1), to=c(0,1)))
 
   # Make Controller Rotation from 0:360 to -180:180 and rescale it to 0:1.
   df <- df %>%
