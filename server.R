@@ -33,4 +33,9 @@ shinyServer(function(input, output, session) {
         vis_timeline_whack(df(), input$timestampInput, input$eventInput, input$eventTypeInput,
                      input$contInput, input$ignoreEventInput)
     })
+    output$gridPlot <- renderPlotly({
+        validate(need(df(), ""))
+        select.data <- event_data(event = "plotly_selected")
+        vis_whackgrid(df(), select.data, input$timestampInput)
+    })
 })

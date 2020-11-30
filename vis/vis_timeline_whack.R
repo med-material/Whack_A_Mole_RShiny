@@ -8,7 +8,7 @@ library(dplyr)
 options("digits.secs"=6)
 
 vistemplate <- plot_ly() %>%
-  config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
+  config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
   layout(dragmode = "pan")
 
 # The input arguments represent lists of column names.
@@ -27,7 +27,7 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
   col_period = "EventColor"
   
   timetemplate <- plot_ly() %>%
-    config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
+    config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
     layout(dragmode = "pan", xaxis = list(tickformat="ms"), yaxis = list(range=c(0,1.1)))
   
   if (col_eventtype == "") {
@@ -65,6 +65,15 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
            HeadCameraPosWorldZ = scales::rescale(HeadCameraPosWorldZ, from=c(-5,5), to=c(0,1)))
   
   # Rescale Controller Positions between -5 and 5 unity meters to be between 0:1.
+  df <- df %>%
+    mutate(RightControllerPosWorldX = scales::rescale(RightControllerPosWorldX, from=c(-5,5), to=c(0,1)),
+           RightControllerPosWorldY = scales::rescale(RightControllerPosWorldY, from=c(-5,5), to=c(0,1)),
+           RightControllerPosWorldZ = scales::rescale(RightControllerPosWorldZ, from=c(-5,5), to=c(0,1)),
+           LeftControllerPosWorldX = scales::rescale(LeftControllerPosWorldX, from=c(-5,5), to=c(0,1)),
+           LeftControllerPosWorldY = scales::rescale(LeftControllerPosWorldY, from=c(-5,5), to=c(0,1)),
+           LeftControllerPosWorldZ = scales::rescale(LeftControllerPosWorldZ, from=c(-5,5), to=c(0,1)))
+  
+  # Make Gaze Positions between -5 and 5 unity meters to be between 0:1.
   df <- df %>%
     mutate(RightControllerPosWorldX = scales::rescale(RightControllerPosWorldX, from=c(-5,5), to=c(0,1)),
            RightControllerPosWorldY = scales::rescale(RightControllerPosWorldY, from=c(-5,5), to=c(0,1)),
@@ -126,9 +135,9 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
     }
   }
   
-  fig <- fig %>% 
+  fig <- fig %>% event_register("plotly_selected") %>%
   layout(
-    yaxis=list(dtick = 0.1,title=" "),
+    yaxis=list(dtick = 0.1,title="", titlefont = list(size=1)),
     xaxis=list(title="Time")
   )
   #fig
