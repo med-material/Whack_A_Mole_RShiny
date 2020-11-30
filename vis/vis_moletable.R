@@ -3,7 +3,7 @@ vis_moleTable <- function(df) {
   moleEvents = c("Mole Spawned", "Fake Mole Spawned", "Pointer Shoot", "Mole Hit", "Mole Missed","Fake Mole Hit")
   table = data.frame(moleEvents, rep(NA,length(moleEvents)))
   names(table) = c("Event", "Count")
-  stats = df_tmp %>%
+  stats = df %>%
     group_by(Event) %>% 
     dplyr::summarise(Count = n()) %>%
     filter(Event %in% moleEvents) %>%
