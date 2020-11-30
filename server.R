@@ -14,10 +14,13 @@ options(shiny.maxRequestSize=50*1024^2)
 shinyServer(function(input, output, session) {
     
     df <- reactive ({
-        validate(need(!is.null(input$fileMeta) && !is.null(input$fileEvent) &&
-                      !is.null(input$fileSample), Msg_nodata()),
-                 need(input$visButton, "Press Visualize to start."))
-        LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
+        load_files <- !is.null(input$fileMeta) && !is.null(input$fileEvent) &&
+                      !is.null(input$fileSample) && input$visButton
+        if (load_files) {
+            LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
+        } else {
+            NULL
+        }
     })
     
     observeEvent(input$visButton, {
@@ -37,5 +40,9 @@ shinyServer(function(input, output, session) {
         validate(need(df(), ""))
         select.data <- event_data(event = "plotly_selected")
         vis_whackgrid(df(), select.data, input$timestampInput)
+    })
+    output$moleTable <- renderTable({
+        req(df())
+        vis_moleTable(df())
     })
 })

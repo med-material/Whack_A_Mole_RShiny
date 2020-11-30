@@ -36,7 +36,10 @@ shinyUI(fluidPage(
                  mainPanel(width = 10,
                            fluidRow(
                                column(8, plotlyOutput("timelinePlot"),tags$div(class = "vizcontrols-explainer")),
-                               column(4, plotlyOutput("gridPlot"),tags$div(class = "vizcontrols-explainer"))
+                               column(4, plotlyOutput("gridPlot"))
+                           ),
+                           fluidRow(
+                               column(4, tableOutput("moleTable"))
                            )
                  ),
         ),

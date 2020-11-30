@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="46.620155mm"
-   height="7.5680141mm"
-   viewBox="0 0 46.620155 7.5680141"
+   width="78.335213mm"
+   height="7.4748263mm"
+   viewBox="0 0 78.335212 7.4748263"
    version="1.1"
    id="svg987"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="78.049818"
-     inkscape:cy="32.742342"
+     inkscape:zoom="1.979899"
+     inkscape:cx="151.31879"
+     inkscape:cy="20.452835"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -58,7 +58,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-22.853882,-75.686906)">
+     transform="translate(-22.853882,-75.760459)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.36646414px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18252431"
@@ -142,5 +142,36 @@
          x="34.545799"
          y="82.679008"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.17843026">drag</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.294;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:0.294, 0.58800001;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect842"
+       width="3.8742487"
+       height="3.6852686"
+       x="94.024452"
+       y="77.112808"
+       rx="0.13034566"
+       ry="0.13034566" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.31338382px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.17843026"
+       x="95.995277"
+       y="83.208176"
+       id="text1548-4-1-2-3"><tspan
+         sodipodi:role="line"
+         id="tspan1546-0-0-1-2"
+         x="95.995277"
+         y="83.208176"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.17843026">box select</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.36646414px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18252431"
+       x="87.548775"
+       y="80.304031"
+       id="text1548-4-4-9-6"><tspan
+         sodipodi:role="line"
+         id="tspan1546-0-5-59-3"
+         x="87.548775"
+         y="80.304031"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.18252431">Filter:</tspan></text>
   </g>
 </svg>
