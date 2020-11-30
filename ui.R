@@ -34,8 +34,10 @@ shinyUI(fluidPage(
                       selectizeInput("ignoreEventInput", "Ignore Events", choices = NULL, selected = NULL, multiple = TRUE, options = NULL)
                  ),
                  mainPanel(width = 10,
-                     plotlyOutput("timelinePlot"),
-                     tags$div(class = "vizcontrols-explainer"),
+                           fluidRow(
+                               column(8, plotlyOutput("timelinePlot"),tags$div(class = "vizcontrols-explainer")),
+                               column(4, plotlyOutput("gridPlot"),tags$div(class = "vizcontrols-explainer"))
+                           )
                  ),
         ),
         # Rest of Page ---------------------------------------------------------------
