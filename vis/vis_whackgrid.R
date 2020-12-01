@@ -9,6 +9,7 @@ options("digits.secs"=6)
 
 # Requires WallColumnCount, WallRowCount, Event, MoleIndexX, MoleIndexY, MoleSpawnOrder
 vis_whackgrid <- function(df = NULL, selection = NULL, col_time, col_streams) {
+  df <<- df
   vistemplate <- plot_ly() %>%
     config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
     layout(dragmode = "pan", showlegend = FALSE)
@@ -87,6 +88,26 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time, col_streams) {
     dfc <- data.frame(x=df[[colnameX]], y=df[[colnameY]], text=paste("x:",df$MolePositionWorldX,"y:",df$MolePositionWorldY))
     fig <- fig %>%
       add_trace(name="MolePositionWorld", data=dfc, x =~x, y =~y, 
+                type='scattergl',mode='markers+lines', hoverinfo='text',text=~text)
+  }
+  if ( c("RightControllerLaserPosWorldX","RightControllerLaserPosWorldY") %in% col_streams) {
+    colnameX = paste("RightControllerLaserPosWorldX","s")
+    df[[colnameX]] = scales::rescale(df$RightControllerLaserPosWorldX,from=c(wall_World$left,wall_World$right), to=c(wall_Index$left,wall_Index$right))  
+    colnameY = paste("RightControllerLaserPosWorldY","s")
+    df[[colnameY]] = scales::rescale(df$RightControllerLaserPosWorldY,from=c(wall_World$down,wall_World$up), to=c(wall_Index$down,wall_Index$up))  
+    dfc <- data.frame(x=df[[colnameX]], y=df[[colnameY]], text=paste("x:",df$RightControllerLaserPosWorldX,"y:",df$RightControllerLaserPosWorldY))
+    fig <- fig %>%
+      add_trace(name="RightControllerLaserPosWorld", data=dfc, x =~x, y =~y, 
+                type='scattergl',mode='markers+lines', hoverinfo='text',text=~text)
+  }
+  if ( c("LeftControllerLaserPosWorldX","LeftControllerLaserPosWorldY") %in% col_streams) {
+    colnameX = paste("LeftControllerLaserPosWorldX","s")
+    df[[colnameX]] = scales::rescale(df$LeftControllerLaserPosWorldX,from=c(wall_World$left,wall_World$right), to=c(wall_Index$left,wall_Index$right))  
+    colnameY = paste("LeftControllerLaserPosWorldY","s")
+    df[[colnameY]] = scales::rescale(df$LeftControllerLaserPosWorldY,from=c(wall_World$down,wall_World$up), to=c(wall_Index$down,wall_Index$up))  
+    dfc <- data.frame(x=df[[colnameX]], y=df[[colnameY]], text=paste("x:",df$LeftControllerLaserPosWorldX,"y:",df$LeftControllerLaserPosWorldY))
+    fig <- fig %>%
+      add_trace(name="LeftControllerLaserPosWorld", data=dfc, x =~x, y =~y, 
                 type='scattergl',mode='markers+lines', hoverinfo='text',text=~text)
   }
 
