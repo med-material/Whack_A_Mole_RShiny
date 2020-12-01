@@ -25,7 +25,7 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time) {
   # Create wall background
   col_count = df %>% filter(!is.na(WallColumnCount)) %>% select(WallColumnCount)
   row_count = df %>% filter(!is.na(WallRowCount)) %>% select(WallRowCount)
-  Wall_moles <- expand.grid(1:col_count[1,1], 1:row_count[1,1]) %>%
+  Wall_moles <- expand.grid(1:tail(col_count, n=1)[,1], 1:tail(row_count, n=1)[,1]) %>%
     dplyr::rename(x = Var1, y = Var2)
 
   fig <- vistemplate %>%
@@ -37,6 +37,7 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time) {
     df$wgrid_rowID <- 1:nrow(df)
     df = df %>% filter(vis_w_time %in% selection$x)
   }
+  
   
   fig <- fig %>%
     add_trace(name="Valid Moles", data=df %>% filter(Event == 'Mole Spawned'),
