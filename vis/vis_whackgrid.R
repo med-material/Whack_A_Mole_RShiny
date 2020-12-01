@@ -8,7 +8,7 @@ library(dplyr)
 options("digits.secs"=6)
 
 # Requires WallColumnCount, WallRowCount, Event, MoleIndexX, MoleIndexY, MoleSpawnOrder
-vis_whackgrid <- function(df = NULL, selection = NULL, col_time) {
+vis_whackgrid <- function(df = NULL, selection = NULL, col_time, col_streams) {
   vistemplate <- plot_ly() %>%
     config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
     layout(dragmode = "pan", showlegend = FALSE)
@@ -30,7 +30,7 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time) {
 
   fig <- vistemplate %>%
     add_trace(name="Spawn Points", data=Wall_moles,
-              x=~x-1, y=~y-1, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32),hoverinfo='none') 
+              x=~x-1, y=~y-1, type='scattergl',mode='markers',symbol=I('o'),marker=list(size=32),hoverinfo='none') 
     
   has_selection = !is.null(selection$x)
   if (has_selection) {
@@ -38,18 +38,57 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time) {
     df = df %>% filter(vis_w_time %in% selection$x)
   }
   
+  # Make Conversion between wall background and mole positions
+  # Make Gaze Positions between -5 and 5 unity meters to be between 0:1.
+  wall_Index = df %>% summarise(
+    left = min(MoleIndexX-1, na.rm=T),
+    right = max(MoleIndexX-1, na.rm=T),
+    up = max(MoleIndexY-1, na.rm=T),
+    down = min(MoleIndexY-1, na.rm=T)
+  )
+  wall_World = df %>% summarise(
+    left = min(MolePositionWorldX, na.rm=T),
+    right = max(MolePositionWorldX, na.rm=T),
+    up = max(MolePositionWorldY, na.rm=T),
+    down = min(MolePositionWorldY, na.rm=T)
+  )
+  
   
   fig <- fig %>%
     add_trace(name="Valid Moles", data=df %>% filter(Event == 'Mole Spawned'),
-              x=~MoleIndexX-1, y=~MoleIndexY-1, mode='markers',marker=list(size=32, color='rgba(77, 220, 32, 0.2)')) %>%
+              x=~MoleIndexX-1, y=~MoleIndexY-1, type='scattergl', mode='markers',marker=list(size=32, color='rgba(77, 220, 32, 0.2)')) %>%
     add_trace(name="Fake Moles", data=df %>% filter(Event == 'Fake Mole Spawned'),
-              x=~MoleIndexX-1, y=~MoleIndexY-1, mode='markers',marker=list(size=32, color='rgba(240, 77, 66, 0.2)')) %>%
+              x=~MoleIndexX-1, y=~MoleIndexY-1, type='scattergl', mode='markers',marker=list(size=32, color='rgba(240, 77, 66, 0.2)')) %>%
     add_trace(name="MoleSpawnOrder", data=df,
-              x=~MoleIndexX-1, y=~MoleIndexY-1, mode='text', text=~MoleSpawnOrder) %>%
+              x=~MoleIndexX-1, y=~MoleIndexY-1, type='scattergl', mode='text', text=~MoleSpawnOrder) %>%
     layout(
       xaxis=list(dtick = 1, showticklabels=F, title = NULL, titlefont = list(size=1)),
       yaxis=list(dtick = 1, showticklabels=F, title = NULL, titlefont = list(size=1)),
       margin=list(l = 0,r = 0,b = 0,t = 0,pad = 1)
     )
+  
+  # Add Continous Data
+  #col_streams = c("WorldGazeHitPositionX","WorldGazeHitPositionY")
+  if (c("WorldGazeHitPositionX","WorldGazeHitPositionY") %in% col_streams) {
+    colnameX = paste("WorldGazeHitPositionX","s")
+    df[[colnameX]] = scales::rescale(df$WorldGazeHitPositionX,from=c(wall_World$left,wall_World$right), to=c(wall_Index$left,wall_Index$right))  
+    colnameY = paste("WorldGazeHitPositionY","s")
+    df[[colnameY]] = scales::rescale(df$WorldGazeHitPositionY,from=c(wall_World$down,wall_World$up), to=c(wall_Index$down,wall_Index$up))  
+    dfc <- data.frame(x=df[[colnameX]], y=df[[colnameY]], text=paste("x:",df$WorldGazeHitPositionX,"y:",df$WorldGazeHitPositionY))
+    fig <- fig %>%
+      add_trace(name="WorldGazeHitPosition", data=dfc, x =~x, y =~y, 
+                type='scattergl',mode='markers+lines', hoverinfo='text',text=~text)
+  }
+  if ( c("MolePositionWorldX","MolePositionWorldY") %in% col_streams) {
+    colnameX = paste("MolePositionWorldX","s")
+    df[[colnameX]] = scales::rescale(df$MolePositionWorldX,from=c(wall_World$left,wall_World$right), to=c(wall_Index$left,wall_Index$right))  
+    colnameY = paste("MolePositionWorldY","s")
+    df[[colnameY]] = scales::rescale(df$MolePositionWorldY,from=c(wall_World$down,wall_World$up), to=c(wall_Index$down,wall_Index$up))  
+    dfc <- data.frame(x=df[[colnameX]], y=df[[colnameY]], text=paste("x:",df$MolePositionWorldX,"y:",df$MolePositionWorldY))
+    fig <- fig %>%
+      add_trace(name="MolePositionWorld", data=dfc, x =~x, y =~y, 
+                type='scattergl',mode='markers+lines', hoverinfo='text',text=~text)
+  }
+
   return(fig)
 }

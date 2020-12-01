@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
     output$gridPlot <- renderPlotly({
         validate(need(df(), ""))
         select.data <- event_data(event = "plotly_selected")
-        vis_whackgrid(df(), select.data, input$timestampInput)
+        vis_whackgrid(df(), select.data, input$timestampInput, input$contInput)
     })
     output$moleTable <- renderTable({
         req(df())
