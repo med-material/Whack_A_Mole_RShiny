@@ -45,4 +45,9 @@ shinyServer(function(input, output, session) {
         req(df())
         vis_moleTable(df())
     })
+    output$eyePlot <- renderPlotly({
+        validate(need(df(), ""))
+        select.data <- event_data(event = "plotly_selected")
+        vis_eyePlot(df(), select.data, input$timestampInput)
+    })
 })

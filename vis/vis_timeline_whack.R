@@ -44,34 +44,7 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
   # Rotation Pitch (X) is typically at 
   # Rotation Pitch (Y) is typically at 
   # Rotation Pitch (Z) is typically at 
-  df <- df %>%
-    mutate(HeadCameraRotEulerX = ifelse(HeadCameraRotEulerX >= 180, HeadCameraRotEulerX-360,HeadCameraRotEulerX),
-           HeadCameraRotEulerX = scales::rescale(HeadCameraRotEulerX, from=c(-180,180), to=c(0,1)),
-           HeadCameraRotEulerY = ifelse(HeadCameraRotEulerY >= 180, HeadCameraRotEulerY-360,HeadCameraRotEulerY),
-           HeadCameraRotEulerY = scales::rescale(HeadCameraRotEulerY, from=c(-180,180), to=c(0,1)),
-           HeadCameraRotEulerZ = ifelse(HeadCameraRotEulerZ >= 180, HeadCameraRotEulerZ-360,HeadCameraRotEulerZ),
-           HeadCameraRotEulerZ = scales::rescale(HeadCameraRotEulerZ, from=c(-180,180), to=c(0,1)))
-
-  # Rescale Head Positions between -5 and 5 unity meters to be between 0:1.
-  df <- df %>%
-    mutate(HeadCameraPosWorldX = scales::rescale(HeadCameraPosWorldX, from=c(-5,5), to=c(0,1)),
-           HeadCameraPosWorldY = scales::rescale(HeadCameraPosWorldY, from=c(-5,5), to=c(0,1)),
-           HeadCameraPosWorldZ = scales::rescale(HeadCameraPosWorldZ, from=c(-5,5), to=c(0,1)))
-  
-  # Rescale Head Positions between -5 and 5 unity meters to be between 0:1.
-  df <- df %>%
-    mutate(HeadCameraPosWorldX = scales::rescale(HeadCameraPosWorldX, from=c(-5,5), to=c(0,1)),
-           HeadCameraPosWorldY = scales::rescale(HeadCameraPosWorldY, from=c(-5,5), to=c(0,1)),
-           HeadCameraPosWorldZ = scales::rescale(HeadCameraPosWorldZ, from=c(-5,5), to=c(0,1)))
-  
-  # Rescale Controller Positions between -5 and 5 unity meters to be between 0:1.
-  df <- df %>%
-    mutate(RightControllerPosWorldX = scales::rescale(RightControllerPosWorldX, from=c(-5,5), to=c(0,1)),
-           RightControllerPosWorldY = scales::rescale(RightControllerPosWorldY, from=c(-5,5), to=c(0,1)),
-           RightControllerPosWorldZ = scales::rescale(RightControllerPosWorldZ, from=c(-5,5), to=c(0,1)),
-           LeftControllerPosWorldX = scales::rescale(LeftControllerPosWorldX, from=c(-5,5), to=c(0,1)),
-           LeftControllerPosWorldY = scales::rescale(LeftControllerPosWorldY, from=c(-5,5), to=c(0,1)),
-           LeftControllerPosWorldZ = scales::rescale(LeftControllerPosWorldZ, from=c(-5,5), to=c(0,1)))
+  fixed_streams = c("HeadCameraRotEulerX", "HeadCameraRotEulerY", "HeadCameraRotEulerZ", "HeadCameraPosWorldX", "HeadCameraPosWorldY", "HeadCameraPosWorldZ", "RightControllerPosWorldX","RightControllerPosWorldY","RightControllerPosWorldZ","LeftControllerPosWorldX","LeftControllerPosWorldY","LeftControllerPosWorldZ","MolePositionWorldX","MolePositionWorldY","MolePositionWorldZ","WorldGazeHitPositionX","WorldGazeHitPositionY","WorldGazeHitPositionZ","RightControllerRotEulerX","RightControllerRotEulerY","RightControllerRotEulerZ","LeftControllerRotEulerX","LeftControllerRotEulerY","LeftControllerRotEulerZ")
   
   # Make Gaze Positions between -5 and 5 unity meters to be between 0:1.
   wall_size = df %>% summarise(
@@ -82,26 +55,7 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
     close_mole = min(MolePositionWorldZ, na.rm=T),
     away_mole = max(MolePositionWorldZ, na.rm=T)
   )
-    
-  df <- df %>%
-    mutate(WorldGazeHitPositionX = scales::rescale(WorldGazeHitPositionX, from=c(wall_size$left_mole-1,wall_size$right_mole+1), to=c(0,1)),
-           WorldGazeHitPositionY = scales::rescale(WorldGazeHitPositionY, from=c(wall_size$down_mole-1,wall_size$up_mole+1), to=c(0,1)),
-           WorldGazeHitPositionZ = scales::rescale(WorldGazeHitPositionZ, from=c(wall_size$close_mole-1,wall_size$away_mole+1), to=c(0,1)))
-
-  # Make Controller Rotation from 0:360 to -180:180 and rescale it to 0:1.
-  df <- df %>%
-    mutate(RightControllerRotEulerX = ifelse(RightControllerRotEulerX >= 180, RightControllerRotEulerX-360,RightControllerRotEulerX),
-           RightControllerRotEulerX = scales::rescale(RightControllerRotEulerX, from=c(-180,180), to=c(0,1)),
-           RightControllerRotEulerY = ifelse(RightControllerRotEulerY >= 180, RightControllerRotEulerY-360,RightControllerRotEulerY),
-           RightControllerRotEulerY = scales::rescale(RightControllerRotEulerY, from=c(-180,180), to=c(0,1)),
-           RightControllerRotEulerZ = ifelse(RightControllerRotEulerZ >= 180, RightControllerRotEulerZ-360,RightControllerRotEulerZ),
-           RightControllerRotEulerZ = scales::rescale(RightControllerRotEulerZ, from=c(-180,180), to=c(0,1)),
-           LeftControllerRotEulerX = ifelse(LeftControllerRotEulerX >= 180, LeftControllerRotEulerX-360,LeftControllerRotEulerX),
-           LeftControllerRotEulerX = scales::rescale(LeftControllerRotEulerX, from=c(-180,180), to=c(0,1)),
-           LeftControllerRotEulerY = ifelse(LeftControllerRotEulerY >= 180, LeftControllerRotEulerY-360,LeftControllerRotEulerY),
-           LeftControllerRotEulerY = scales::rescale(LeftControllerRotEulerY, from=c(-180,180), to=c(0,1)),
-           LeftControllerRotEulerZ = ifelse(LeftControllerRotEulerZ >= 180, LeftControllerRotEulerZ-360,LeftControllerRotEulerZ),
-           LeftControllerRotEulerZ = scales::rescale(LeftControllerRotEulerZ, from=c(-180,180), to=c(0,1)))
+  df_whack = NormalizeWhackAMoledata(df, wall_size)
   
   # Convert timestamps to something we can use with scattergl.
   df$vis_t_time = df[[col_time]]
@@ -133,7 +87,11 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
     if (col_c %in% names(df)) {
       colname = paste(col_c,"s")
       df[[col_c]] <- ifelse(df[[col_c]] == -1, NA, df[[col_c]])
-      df[[colname]] = scales::rescale(df[[col_c]], to=c(0,1))
+      if (col_c %in% fixed_streams) {
+        df[[colname]] = df_whack[[col_c]]
+      } else {
+        df[[colname]] = scales::rescale(df[[col_c]], to=c(0,1))
+      }
       dfc <- data.frame(x=df$vis_t_time, y=df[[colname]], text=df[[col_c]])
       fig <- fig %>%
         add_trace(name=col_c, data=dfc, x =~x, y =~y, 
@@ -148,4 +106,80 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
   )
   #fig
   return(fig)
+}
+
+NormalizeWhackAMoledata <- function(df, wall_size) {
+  df <- df %>%
+    mutate(HeadCameraRotEulerX_wrap = ifelse(HeadCameraRotEulerX >= 180, HeadCameraRotEulerX-360,HeadCameraRotEulerX),
+           HeadCameraRotEulerX = scales::rescale(HeadCameraRotEulerX_wrap, from=c(-180,180), to=c(0,1)),
+           HeadCameraRotEulerY_wrap = ifelse(HeadCameraRotEulerY >= 180, HeadCameraRotEulerY-360,HeadCameraRotEulerY),
+           HeadCameraRotEulerY = scales::rescale(HeadCameraRotEulerY_wrap, from=c(-180,180), to=c(0,1)),
+           HeadCameraRotEulerZ_wrap = ifelse(HeadCameraRotEulerZ >= 180, HeadCameraRotEulerZ-360,HeadCameraRotEulerZ),
+           HeadCameraRotEulerZ = scales::rescale(HeadCameraRotEulerZ_wrap, from=c(-180,180), to=c(0,1)))
+  # Rescale Head Positions between -5 and 5 unity meters to be between 0:1.
+  df <- df %>%
+    mutate(HeadCameraPosWorldX_scaled = scales::rescale(HeadCameraPosWorldX, from=c(wall_size$left_mole,wall_size$right_mole), to=c(0,1)),
+           HeadCameraPosWorldX = HeadCameraPosWorldX_scaled,
+           HeadCameraPosWorldY_scaled = scales::rescale(HeadCameraPosWorldY, from=c(wall_size$down_mole,wall_size$up_mole), to=c(0,1)),
+           HeadCameraPosWorldY = HeadCameraPosWorldY_scaled,
+           HeadCameraPosWorldZ_scaled = scales::rescale(HeadCameraPosWorldZ, from=c(-5,5), to=c(0,1)),
+           HeadCameraPosWorldZ = HeadCameraPosWorldZ_scaled)
+  
+  
+  # Rescale Head Positions between -5 and 5 unity meters to be between 0:1.
+  df <- df %>%
+    mutate(HeadCameraPosWorldX_scaled = scales::rescale(HeadCameraPosWorldX, from=c(wall_size$left_mole,wall_size$right_mole), to=c(0,1)),
+           HeadCameraPosWorldX = HeadCameraPosWorldX_scaled,
+           HeadCameraPosWorldY_scaled = scales::rescale(HeadCameraPosWorldY, from=c(wall_size$down_mole,wall_size$up_mole), to=c(0,1)),
+           HeadCameraPosWorldY = HeadCameraPosWorldY_scaled,
+           HeadCameraPosWorldZ_scaled = scales::rescale(HeadCameraPosWorldZ, from=c(-5,5), to=c(0,1)),
+           HeadCameraPosWorldZ = HeadCameraPosWorldZ_scaled)
+  
+  # Rescale Mole Positions between -5 and 5 unity meters to be between 0:1.
+  df <- df %>%
+    mutate(MolePositionWorldX_scaled = scales::rescale(MolePositionWorldX, from=c(wall_size$left_mole,wall_size$right_mole), to=c(0,1)),
+           MolePositionWorldX = MolePositionWorldX_scaled,
+           MolePositionWorldY_scaled = scales::rescale(MolePositionWorldY, from=c(wall_size$down_mole,wall_size$up_mole), to=c(0,1)),
+           MolePositionWorldY = MolePositionWorldY_scaled,
+           MolePositionWorldZ_scaled = scales::rescale(MolePositionWorldZ, from=c(wall_size$close_mole,wall_size$away_mole), to=c(0,1)),
+           MolePositionWorldZ = MolePositionWorldZ_scaled)  
+  
+  # Rescale Controller Positions between -5 and 5 unity meters to be between 0:1.
+  df <- df %>%
+    mutate(RightControllerPosWorldX_scaled = scales::rescale(RightControllerPosWorldX, from=c(wall_size$left_mole,wall_size$right_mole), to=c(0,1)),
+           RightControllerPosWorldX = RightControllerPosWorldX_scaled,
+           RightControllerPosWorldY_scaled = scales::rescale(RightControllerPosWorldY, from=c(wall_size$down_mole,wall_size$up_mole), to=c(0,1)),
+           RightControllerPosWorldY = RightControllerPosWorldY_scaled,
+           RightControllerPosWorldZ_scaled = scales::rescale(RightControllerPosWorldZ, from=c(-5,5), to=c(0,1)),
+           RightControllerPosWorldZ = RightControllerPosWorldZ_scaled,
+           LeftControllerPosWorldX_scaled = scales::rescale(LeftControllerPosWorldX, from=c(wall_size$left_mole,wall_size$right_mole), to=c(0,1)),
+           LeftControllerPosWorldX = LeftControllerPosWorldX_scaled,
+           LeftControllerPosWorldY_scaled = scales::rescale(LeftControllerPosWorldY, from=c(wall_size$down_mole,wall_size$up_mole), to=c(0,1)),
+           LeftControllerPosWorldY = LeftControllerPosWorldY_scaled,
+           LeftControllerPosWorldZ_scaled = scales::rescale(LeftControllerPosWorldZ, from=c(-5,5), to=c(0,1)),
+           LeftControllerPosWorldZ = LeftControllerPosWorldZ_scaled)
+  
+  df <- df %>%
+    mutate(WorldGazeHitPositionX_scaled = scales::rescale(WorldGazeHitPositionX, from=c(wall_size$left_mole,wall_size$right_mole), to=c(0,1)),
+           WorldGazeHitPositionX = WorldGazeHitPositionX_scaled,
+           WorldGazeHitPositionY_scaled = scales::rescale(WorldGazeHitPositionY, from=c(wall_size$down_mole,wall_size$up_mole), to=c(0,1)),
+           WorldGazeHitPositionY = WorldGazeHitPositionY_scaled,
+           WorldGazeHitPositionZ_scaled = scales::rescale(WorldGazeHitPositionZ, from=c(wall_size$close_mole,wall_size$away_mole), to=c(0,1)),
+           WorldGazeHitPositionZ = WorldGazeHitPositionZ_scaled)
+  
+  # Make Controller Rotation from 0:360 to -180:180 and rescale it to 0:1.
+  df <- df %>%
+    mutate(RightControllerRotEulerX_wrap = ifelse(RightControllerRotEulerX >= 180, RightControllerRotEulerX-360,RightControllerRotEulerX),
+           RightControllerRotEulerX = scales::rescale(RightControllerRotEulerX_wrap, from=c(-180,180), to=c(0,1)),
+           RightControllerRotEulerY_wrap = ifelse(RightControllerRotEulerY >= 180, RightControllerRotEulerY-360,RightControllerRotEulerY),
+           RightControllerRotEulerY = scales::rescale(RightControllerRotEulerY_wrap, from=c(-180,180), to=c(0,1)),
+           RightControllerRotEulerZ_wrap = ifelse(RightControllerRotEulerZ >= 180, RightControllerRotEulerZ-360,RightControllerRotEulerZ),
+           RightControllerRotEulerZ = scales::rescale(RightControllerRotEulerZ_wrap, from=c(-180,180), to=c(0,1)),
+           LeftControllerRotEulerX_wrap = ifelse(LeftControllerRotEulerX >= 180, LeftControllerRotEulerX-360,LeftControllerRotEulerX),
+           LeftControllerRotEulerX = scales::rescale(LeftControllerRotEulerX_wrap, from=c(-180,180), to=c(0,1)),
+           LeftControllerRotEulerY_wrap = ifelse(LeftControllerRotEulerY >= 180, LeftControllerRotEulerY-360,LeftControllerRotEulerY),
+           LeftControllerRotEulerY = scales::rescale(LeftControllerRotEulerY_wrap, from=c(-180,180), to=c(0,1)),
+           LeftControllerRotEulerZ_wrap = ifelse(LeftControllerRotEulerZ >= 180, LeftControllerRotEulerZ-360,LeftControllerRotEulerZ),
+           LeftControllerRotEulerZ = scales::rescale(LeftControllerRotEulerZ_wrap, from=c(-180,180), to=c(0,1)))
+ return(df) 
 }
