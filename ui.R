@@ -40,7 +40,7 @@ shinyUI(fluidPage(
                            ),
                            fluidRow(
                                column(4, tableOutput("moleTable")),
-                               column(4, tableOutput("otherTable")),
+                               column(4, plotlyOutput("motorPlot")),
                                column(4, plotlyOutput("eyePlot"))
                            )
                  ),
