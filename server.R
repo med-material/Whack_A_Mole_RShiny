@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
     
     df <- reactive ({
         load_files <- !is.null(input$fileMeta) && !is.null(input$fileEvent) &&
-                      !is.null(input$fileSample) && input$visButton
+                      !is.null(input$fileSample)
         if (load_files) {
             LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
         } else {
@@ -33,11 +33,13 @@ shinyServer(function(input, output, session) {
     
     output$timelinePlot <- renderPlotly({
         validate(need(df(), Msg_nodata()))
+        validate(need(input$timestampInput, "Loading.."))
         vis_timeline_whack(df(), input$timestampInput, input$eventInput, input$eventTypeInput,
                      input$contInput, input$ignoreEventInput)
     })
     output$gridPlot <- renderPlotly({
         validate(need(df(), ""))
+        validate(need(input$timestampInput, "Loading.."))
         select.data <- event_data(event = "plotly_selected")
         vis_whackgrid(df(), select.data, input$timestampInput, input$contInput)
     })
@@ -47,7 +49,15 @@ shinyServer(function(input, output, session) {
     })
     output$eyePlot <- renderPlotly({
         validate(need(df(), ""))
+        validate(need(input$timestampInput, "Loading.."))
         select.data <- event_data(event = "plotly_selected")
         vis_eyePlot(df(), select.data, input$timestampInput)
+    })
+    output$motorPlot <- renderPlotly({
+        validate(need(df(), ""))
+        validate(need(df()$MotorSpaceName, "Not Supported."))
+        validate(need(input$timestampInput, "Loading.."))
+        select.data <- event_data(event = "plotly_selected")
+        vis_motorspace(df(), select.data, input$timestampInput)
     })
 })
