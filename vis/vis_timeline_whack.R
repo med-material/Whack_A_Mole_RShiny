@@ -34,7 +34,7 @@ vis_timeline_whack <- function(df, col_time, col_event, col_eventtype, col_strea
     col_eventtype = col_event
   }
   
-  if (ignore_event != "") {
+  if (ignore_event != "" && length(ignore_event) > 0) {
     df[[col_eventtype]] = as.character(df[[col_eventtype]])
     df[[col_eventtype]] <- ifelse(df[[col_eventtype]] %in% ignore_event, NA, df[[col_eventtype]])
   }
