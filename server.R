@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
     
     df <- reactive ({
         load_files <- !is.null(input$fileMeta) && !is.null(input$fileEvent) &&
-                      !is.null(input$fileSample)
+                      !is.null(input$fileSample) && input$visButton
         if (load_files) {
             LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
         } else {
