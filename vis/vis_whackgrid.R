@@ -9,7 +9,6 @@ options("digits.secs"=6)
 
 # Requires WallColumnCount, WallRowCount, Event, MoleIndexX, MoleIndexY, MoleSpawnOrder
 vis_whackgrid <- function(df = NULL, selection = NULL, col_time, col_streams) {
-  df <<- df
   vistemplate <- plot_ly() %>%
     config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
     layout(dragmode = "pan", showlegend = FALSE)
