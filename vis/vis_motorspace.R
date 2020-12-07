@@ -25,8 +25,9 @@ vis_motorspace <- function(df, selection = NULL, col_time) {
     motorspace = motorspace %>% bind_rows(motorspace_new)
     new_ms = data.frame(x = c(motorspace_new$left, motorspace_new$left, motorspace_new$right, motorspace_new$right, motorspace_new$left),
                     y=c(motorspace_new$up, motorspace_new$down, motorspace_new$down, motorspace_new$up, motorspace_new$up))
+    new_ms$name = ms_name
     fig <- fig %>%
-      add_trace(name="Motorspace", data=new_ms,
+      add_trace(name=~name, data=new_ms,
                 x=~x, y=~y, type='scattergl',mode='lines')
   }
 
