@@ -108,9 +108,7 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time, col_streams) {
                 type='scattergl',mode='markers+lines', hoverinfo='text',text=~text)
   }
 
-  #if (any(c("ViewortLowerLeftX","ViewportLowerLeftY","ViewportUpperLeftX","ViewportUpperLeftY",
-  #       "ViewportLowerMiddleX","ViewportLowerMiddleY","ViewportLowerRightX","ViewportLowerRightY",
-  #       "ViewportUpperRightX","ViewportUpperRightY","ViewportUpperMiddleX","ViewportUpperMiddleY")%in% col_streams)) {
+  if ("ViewportLowerLeftX" %in% col_streams) {
     # Add Viewport Visualization
     #viewport_vis = data.frame(x=c(min(df$ViewportLowerLeftX,na.rm=T),min(df$ViewportLowerMiddleX,na.rm=T),max(df$ViewportLowerRightX,na.rm=T),max(df$ViewportUpperRightX,na.rm=T),min(df$ViewportUpperMiddleX,na.rm=T),min(df$ViewportUpperLeftX,na.rm=T),min(df$ViewportLowerLeftX,na.rm=T)),
     #                          y=c(min(df$ViewportLowerLeftY,na.rm=T),min(df$ViewportLowerMiddleY,na.rm=T),min(df$ViewportLowerRightY,na.rm=T),max(df$ViewportUpperRightY,na.rm=T),max(df$ViewportUpperMiddleY,na.rm=T),max(df$ViewportUpperLeftY,na.rm=T),min(df$ViewportLowerLeftY,na.rm=T)))
@@ -145,7 +143,7 @@ vis_whackgrid <- function(df = NULL, selection = NULL, col_time, col_streams) {
                 type='scattergl',mode='lines+markers') %>%
       add_trace(name="ViewportUpperLeft", data=df,x=~ViewportUpperLeftX_scaled,y=~ViewportUpperLeftY_scaled,
                 type='scattergl',mode='lines+markers')
-  #}
+  }
   fig <- fig %>%
     layout(
       xaxis=list(dtick = 1, showticklabels=F, title = NULL, titlefont = list(size=1),range=c(wall_Index$left-1,wall_Index$right+1)),
