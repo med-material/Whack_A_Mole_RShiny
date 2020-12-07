@@ -47,6 +47,10 @@ shinyServer(function(input, output, session) {
         req(df())
         vis_moleTable(df())
     })
+    output$directionTable <- renderTable({
+      req(df())
+      vis_directionTable(df())
+    })
     output$eyePlot <- renderPlotly({
         validate(need(df(), ""))
         validate(need(input$timestampInput, "Loading.."))

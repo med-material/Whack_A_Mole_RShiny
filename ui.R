@@ -39,7 +39,8 @@ shinyUI(fluidPage(
                                column(4, plotlyOutput("gridPlot"))
                            ),
                            fluidRow(
-                               column(4, tableOutput("moleTable")),
+                               column(2, tableOutput("moleTable")),
+                               column(2, tableOutput("directionTable")),
                                column(4, plotlyOutput("motorPlot")),
                                column(4, plotlyOutput("eyePlot"))
                            )
