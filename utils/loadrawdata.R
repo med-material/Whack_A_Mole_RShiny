@@ -1,7 +1,4 @@
 library(tidyverse)
-library(plyr)
-library(lubridate)
-library(plotly)
 library(dplyr)
 
 LoadFromFilePaths <- function(filePathMeta, filePathEvent, filePathSample) {
@@ -53,35 +50,14 @@ LoadFromDirectory <- function(dir, event = "Event", sample = "Sample", meta = "M
   df_meta <- PreprocessMeta(df_meta)
   dataset <- MergeDatasets(df_meta, df_event, df_sample)
   
-  # Manual Trigger:
-  #dir = "logdata"
-  #datasets = list.files(dir, pattern=paste(".csv",sep=''))
-  #Metasets = list.files(dir, pattern=paste("Meta",sep=''))
-  #Eventsets = list.files(dir, pattern=paste("Event",sep=''))
-  #Samplesets = list.files(dir, pattern=paste("Sample",sep=''))
-  #datasets_meta <- lapply(paste(dir, "/", Metasets, sep=''), read.csv, na.strings="NULL", sep=";")
-  #datasets_event <- lapply(paste(dir, "/", Eventsets, sep=''), read.csv, na.strings="NULL", sep=";")
-  #datasets_sample <- lapply(paste(dir, "/", Samplesets, sep=''), read.csv, na.strings="NULL", sep=";")
-  # Preprocess meta dataset
-  #for (i in 1:length(Metasets)) {
-  #  datasets_meta[[i]] <- PreprocessMeta(datasets_meta[[i]])
-  #}
-  
-  # Merge
-  #datasets = list()
-  #for (i in 1:length(Metasets)) {
-  #  df <- MergeDatasets(datasets_meta[[i]], datasets_event[[i]], datasets_sample[[i]])
-  #  datasets[[i]] <- df
-  #  names(datasets)[i] <- i
-  #}
   return(dataset)
 }
 
 PreprocessMeta <- function(dataset_meta) {
   dataset_meta <- dataset_meta %>%
-    mutate(Timestamp = NULL,
-           Email = NULL,
-           Framecount = NULL)
+    rename(MetaTimestamp = Timestamp,
+           MetaEmail = Email,
+           MetaFramecount = Framecount)
   return(dataset_meta)
 }
 

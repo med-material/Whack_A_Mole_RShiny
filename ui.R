@@ -16,12 +16,11 @@ shinyUI(fluidPage(
     # Input ----------------
     fluidRow(
         column(4, titlePanel("Game Timeline"),),
-        column(8,
-               column(3,fileInput("fileMeta", "Choose Meta CSV File", accept = c("text/csv","text/comma-separated-values,text/plain",".csv"))),
-               column(3,fileInput("fileEvent", "Choose Event CSV File", accept = c("text/csv","text/comma-separated-values,text/plain",".csv"))),
-               column(3,fileInput("fileSample", "Choose Sample CSV File", accept = c("text/csv","text/comma-separated-values,text/plain",".csv"))),
-               column(1,actionButton("visButton", "Visualize")),
-        )
+    ),
+    fluidRow(
+        column(2, data_selection_summary_UI("input_info")),
+        column(3, actionButton("DbButton", "Change Data"),
+                  actionButton("CsvButton","Manual Upload"))
     ),
     #  Output ----------------
     tabsetPanel(id = "analysisChooser", type = "tabs",
