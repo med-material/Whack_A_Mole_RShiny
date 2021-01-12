@@ -1,4 +1,4 @@
 Msg_nodata <- function() {
-  msg <- "Add your CSV files to visualize the timeline."
+  msg <- "Add your CSV files above."
   return(msg)
 }
