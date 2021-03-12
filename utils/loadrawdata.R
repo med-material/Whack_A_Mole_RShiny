@@ -6,8 +6,7 @@ LoadFromFilePaths <- function(filePathMeta, filePathEvent, filePathSample) {
   dataset_meta <- read.csv(filePathMeta, na.strings="NULL", sep=";")
   dataset_event <- read.csv(filePathEvent, na.strings="NULL", sep=";")
   dataset_sample <- read.csv(filePathSample, na.strings="NULL", sep=";")
-  dataset_meta <- PreprocessMeta(dataset_meta)
-  dataset <- MergeDatasets(dataset_meta, dataset_event, dataset_sample)
+  dataset <- dataset_event %>% bind_rows(dataset_sample) %>% left_join(dataset_meta, by = "SessionID", suffix=c(".Event",".Meta"))
   return(dataset)
 }
 
@@ -19,17 +18,17 @@ LoadFromDirectory <- function(dir, event = "Event", sample = "Sample", meta = "M
   paste("*",event,".csv",sep="")
   #main game event data
   df_event <- list.files(recursive=TRUE ,path = dir,
-                      pattern = event,
-                      full.names = T) %>% 
+                         pattern = event,
+                         full.names = T) %>% 
     tibble(filename = .) %>%   
     mutate(file_contents = map(filename,~ read_csv(file.path(.),na = "NULL")))  %>% 
     unnest(cols=-filename) %>%
     mutate(file_contents = NULL)
-
+  
   #sample data
   df_sample <- list.files(recursive=TRUE ,path = dir,
-                            pattern = sample, 
-                            full.names = T) %>% 
+                          pattern = sample, 
+                          full.names = T) %>% 
     tibble(filename = .) %>%   
     mutate(file_contents = map(filename,~ read_csv(file.path(.),na = "NULL")))  %>% 
     unnest(cols=-filename) %>%
@@ -37,8 +36,8 @@ LoadFromDirectory <- function(dir, event = "Event", sample = "Sample", meta = "M
   
   #meta data
   df_meta <- list.files(recursive=TRUE ,path = dir,
-                             pattern = meta, 
-                             full.names = T) %>% 
+                        pattern = meta, 
+                        full.names = T) %>% 
     tibble(filename = .) %>%   
     mutate(file_contents = map(filename,~ read_csv(file.path(.),na = "NULL")))  %>% 
     unnest(cols=-filename) %>% 
@@ -47,22 +46,7 @@ LoadFromDirectory <- function(dir, event = "Event", sample = "Sample", meta = "M
     mutate(file_contents = NULL)
   
   
-  df_meta <- PreprocessMeta(df_meta)
-  dataset <- MergeDatasets(df_meta, df_event, df_sample)
+  dataset <- df_event %>% bind_rows(df_sample) %>% left_join(df_meta, by = "SessionID", suffix=c(".Event",".Meta"))
   
   return(dataset)
-}
-
-PreprocessMeta <- function(dataset_meta) {
-  dataset_meta <- dataset_meta %>%
-    rename(MetaTimestamp = Timestamp,
-           MetaEmail = Email,
-           MetaFramecount = Framecount)
-  return(dataset_meta)
-}
-
-MergeDatasets <- function(dataset_meta, dataset_event, dataset_sample) {
-  df = data.frame()
-  df = dataset_event %>% bind_rows(dataset_sample) %>% left_join(dataset_meta, by = "SessionID")
-  return(df)
 }
