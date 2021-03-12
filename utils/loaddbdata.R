@@ -1,11 +1,9 @@
 library(RMySQL)
-
-mydb <- NULL
-db_table_meta <- "hammel_dec2020_meta_2"
-db_table_event <- "hammel_dec2020_event_2"
-db_table_sample <- "hammel_dec2020_sample_3"
-db_sessionid <- "NA"
-connected = FALSE
+mydb <<- NULL
+db_table_meta <<- NULL
+db_table_event <<- NULL
+db_table_sample <<- NULL
+db_sessionid <<- "NA"
 
 SetTableMeta <- function(newname) {
   db_table_meta <<- newname
@@ -13,6 +11,10 @@ SetTableMeta <- function(newname) {
 
 SetTableEvent <- function(newname) {
   db_table_event <<- newname
+}
+
+SetTableSample <- function(newname) {
+  db_table_sample <<- newname
 }
 
 SetSessionID <- function(newID) {
@@ -23,21 +25,20 @@ GetSessionID <- function() {
   return(db_sessionid)
 }
 
-GetConnectedToServer <- function() {
-  return(connected)
-}
-
 ConnectToServer <- function(auth_data) {
+  SetTableMeta(auth_data[1, "table_meta"])
+  SetTableEvent(auth_data[1, "table_event"])
+  SetTableSample(auth_data[1, "table_sample"])
   connected = FALSE
   lapply( dbListConnections( dbDriver( drv = "MySQL")), dbDisconnect)
   tryCatch({
     mydb <<- dbConnect(MySQL(),
-                     user=auth_data[1, "username"],
-                     # rstudioapi::askForPassword("Database user"),
-                     password=auth_data[1, "password"],
-                     # rstudioapi::askForPassword("Database password"),
-                     dbname=auth_data[1, "dbname"],
-                     host=auth_data[1, "host"])
+                       user=auth_data[1, "username"],
+                       # rstudioapi::askForPassword("Database user"),
+                       password=auth_data[1, "password"],
+                       # rstudioapi::askForPassword("Database password"),
+                       dbname=auth_data[1, "dbname"],
+                       host=auth_data[1, "host"])
   },error=function(cond) {
     message("Could not connect to database.")
   },finally={
@@ -70,11 +71,10 @@ RetreiveAllData <- function(type = "Full") {
   } else if (type == "Sample") {
     df = RetreiveDataSet(db_table_sample)
   } else if (type == "Full") {
-    df_event = RetreiveDataSet(db_table_event)
-    df_meta = RetreiveDataSet(db_table_meta)
-    df_sample = RetreiveDataSet(db_table_sample)
-    df_meta = PreprocessMeta(df_meta)
-    df = df_event %>% bind_rows(df_sample) %>% left_join(df_meta, by = "SessionID")
+    df_event <- RetreiveDataSet(db_table_event)
+    df_meta <- RetreiveDataSet(db_table_meta)
+    df_sample <- RetreiveDataSet(db_table_sample)
+    df <- df_event %>% bind_rows(df_sample) %>% left_join(df_meta, by = "SessionID", suffix=c(".Event",".Meta"))
   }
   return(df)
 }
@@ -92,8 +92,7 @@ RetreiveCurrentData <- function(type = "Full") {
     df_meta = RetreiveDataSet(db_table_meta, "SessionID", db_sessionid)
     df_sample = RetreiveDataSet(db_table_sample, "SessionID", db_sessionid)
     
-    df_meta = PreprocessMeta(df_meta)
-    df = df_event %>% bind_rows(df_sample) %>% left_join(df_meta, by = "SessionID")
+    df = df_event %>% bind_rows(df_sample) %>% left_join(df_meta, by = "SessionID", suffix=c(".Event",".Meta"))
   }
   return(df)
 }
@@ -135,12 +134,4 @@ MarkDataForDeletion <- function(tablename, column = "NA", colvalue= "NA", delete
   df = fetch(res, n=-1) 
   dbClearResult(dbListResults(mydb)[[1]])
   return(df)
-}
-
-PreprocessMeta <- function(dataset_meta) {
-  dataset_meta <- dataset_meta %>%
-    rename(MetaTimestamp = Timestamp,
-           MetaEmail = Email,
-           MetaFramecount = Framecount)
-  return(dataset_meta)
 }

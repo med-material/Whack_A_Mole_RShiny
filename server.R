@@ -13,15 +13,17 @@ options(shiny.maxRequestSize=50*1024^2)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
-  
-  connected = GetConnectedToServer()
-  if (!connected) {
-    auth <- read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character","character","character","character"))
-    connected = ConnectToServer(auth)
-  }
-  
   r <- reactiveValues(df = NULL, meta = NULL, source = NULL)
-  
+
+  callModule(data_selection_summary,"input_info", reactive(r$df))
+  callModule(player_overview,"overview_panel", reactive(r$df))
+
+  auth = read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character"))
+  connected = ConnectToServer(auth)
+  if (!connected) {
+    r$df <- NA
+    shinyjs::disable("DbButton")
+  }
   
   db_data <- callModule(db_select, "selectData", connected)
   csv_data <- callModule(csv_upload, "uploadData")
