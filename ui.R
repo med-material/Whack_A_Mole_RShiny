@@ -23,7 +23,12 @@ shinyUI(fluidPage(
     ),
     #  Output ----------------
     tabsetPanel(id = "analysisChooser", type = "tabs",
-        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"),
+        tabPanel(value = "Player Overview", id = "PlayerOverview", strong("Player Overview"), icon=icon('user'),
+                 mainPanel(width = 12,
+                           player_overview_UI("overview_panel")
+                 )
+                 ),
+        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
                  sidebarPanel(width = 2,
                       selectizeInput("timestampInput", "Timestamp", choices = NULL, selected = NULL, multiple = FALSE, options = NULL),
                       selectizeInput("eventInput", "Event Data", choices = NULL, selected = NULL, multiple = FALSE, options = NULL),
