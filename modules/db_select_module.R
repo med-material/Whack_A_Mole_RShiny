@@ -23,7 +23,8 @@ db_select <- function(input, output, session, connected) {
     meta <- unique(RetreiveAllData("Meta"))
     active_session = GetSessionID()
     if (active_session == "NA") {
-      active_session <- as.character(meta$SessionID[1])
+      latest_session = nrow(meta)
+      active_session <- as.character(meta$SessionID[latest_session])
       SetSessionID(active_session)
     }
     active_df = RetreiveCurrentData()
