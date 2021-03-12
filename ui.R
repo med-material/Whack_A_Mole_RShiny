@@ -13,14 +13,13 @@ library(shinyjs)
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
     includeCSS("custom.css"),
-    # Input ----------------
-    fluidRow(
-        column(4, titlePanel("Game Timeline"),),
-    ),
-    fluidRow(
-        column(2, data_selection_summary_UI("input_info")),
-        column(3, actionButton("DbButton", "Change Data"),
-                  actionButton("CsvButton","Manual Upload"))
+    useShinyjs(),
+    tags$header(
+        # Input ----------------
+        img(src='whack_icon.svg', id="whack-logo"),
+        actionButton("DbButton", "Change Data"),
+        actionButton("CsvButton","Manual Upload"),
+        tags$div(class = "d-inline-block separated", data_selection_summary_UI("input_info"))
     ),
     #  Output ----------------
     tabsetPanel(id = "analysisChooser", type = "tabs",

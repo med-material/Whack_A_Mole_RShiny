@@ -1,6 +1,16 @@
 body {
     padding-top: 15px;
 }
+
+header {
+  margin-bottom: 25px;
+}
+
+header #whack-logo {
+  margin-right: 15px;
+}
+
+}
 #sidebar {
     max-width: 250px;
 }
@@ -21,7 +31,17 @@ footer {
     display: inline-block;
 }
 
-.shiny-output-error-validation {
+.d-inline-block {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.separated {
+  margin-right 12px;
+  margin-left: 12px;
+}
+
+.shiny-output-error-vis {
 
     color: #888;
     text-align: center;
