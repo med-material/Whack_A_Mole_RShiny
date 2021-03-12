@@ -4,7 +4,7 @@ vis_directionTable <- function(df, col_time) {
   #df <- df_tmp
   #df <- df_tmp
   
-  df$vis_t_time = df$Timestamp#df[[col_time]]
+  df$vis_t_time = df[[col_time]]
   if (!is.numeric(df$vis_t_time)) {
     df <- df %>% mutate(vis_t_time = as.POSIXlt(vis_t_time, format = "%Y-%m-%d %H:%M:%OS"))
     hoursecs = (df$vis_t_time$hour - df$vis_t_time[1]$hour) * 60 * 60
