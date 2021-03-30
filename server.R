@@ -27,7 +27,6 @@ shinyServer(function(input, output, session) {
   
   db_data <- callModule(db_select, "selectData", connected)
   csv_data <- callModule(csv_upload, "uploadData")
-  callModule(data_selection_summary,"input_info", reactive(r$df))
 
   
   observeEvent(csv_data$trigger, {
