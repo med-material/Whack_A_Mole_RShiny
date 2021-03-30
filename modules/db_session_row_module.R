@@ -46,6 +46,6 @@ db_session_row_UpdateText <- function(input, output, session, sesid, email, time
     styletext = " <strong>(Marked For Deletion)</strong>"
   }
   output$sessionText <- renderUI({
-    HTML(paste0("<p ",style,">",name,", ",program," (",duration," sec.)",styletext,"<br><small>",timestring," (",theid,")</small></p>"))
+    HTML(paste0("<p ",style,">",trimws(name),", ",program," (",duration," sec.)",styletext,"<br><small>",timestring," (",theid,")</small></p>"))
   })
 }
