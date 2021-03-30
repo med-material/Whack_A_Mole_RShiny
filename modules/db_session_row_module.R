@@ -11,16 +11,16 @@ db_session_row_UI <- function(id) {
   )
 }
 
-db_session_row <- function(input, output, session, sesid, email, timestamp) {
+db_session_row <- function(input, output, session, sesid, email, timestamp, name, program, duration) {
   ns <- session$ns
   
   toReturn <- reactiveValues(active = F, sesid = sesid, trigger = 0)
   
-  db_session_row_UpdateText(input, output, session, sesid, email, timestamp)
+  db_session_row_UpdateText(input, output, session, sesid, email, timestamp, name, program, duration)
   
   observeEvent(input$actionDelete, {
-    db_session_row_UpdateText(input, output, session, sesid, email, timestamp,markForDeletion=TRUE)
-    MarkDataForDeletion("hammel_dec2020_meta_2","SessionID",sesid)
+    db_session_row_UpdateText(input, output, session, sesid, email, timestamp, name, program, duration, markForDeletion=TRUE)
+    MarkDataForDeletion("Meta","SessionID",sesid)
   })
   
   observeEvent(input$actionChoose, {
@@ -33,7 +33,7 @@ db_session_row <- function(input, output, session, sesid, email, timestamp) {
   return(toReturn)
 }
 
-db_session_row_UpdateText <- function(input, output, session, sesid, email, timestamp,markForDeletion=F) {
+db_session_row_UpdateText <- function(input, output, session, sesid, email, timestamp, name, program, duration, markForDeletion=F) {
   time <- sprintf("%02d:%02d", hour(timestamp), minute(timestamp))
   weekday <- wday(timestamp, abbr = F, label=T)
   thedate <- format(date(timestamp), "%d %b %Y")
@@ -46,6 +46,6 @@ db_session_row_UpdateText <- function(input, output, session, sesid, email, time
     styletext = " <strong>(Marked For Deletion)</strong>"
   }
   output$sessionText <- renderUI({
-    HTML(paste0("<p ",style,">",timestring,styletext,"<br><small>",email," (",theid,")</small></p>"))
+    HTML(paste0("<p ",style,">",name,", ",program," (",duration," sec.)",styletext,"<br><small>",timestring," (",theid,")</small></p>"))
   })
 }

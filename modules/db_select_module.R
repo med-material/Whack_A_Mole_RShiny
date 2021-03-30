@@ -57,7 +57,8 @@ db_select <- function(input, output, session, connected) {
     })
     
     chosen_row <- lapply(1:length(ids), function(i) {
-      callModule(db_session_row, i, meta$SessionID[i],meta$Email[i],meta$Timestamp[i])
+      callModule(db_session_row, i, meta$SessionID[i],meta$Email[i],meta$Timestamp[i],
+                 meta$ProfileName[i], meta$SessionProgram[i], meta$SessionDuration[i])
     })
     
     lapply(chosen_row, function(row) {
