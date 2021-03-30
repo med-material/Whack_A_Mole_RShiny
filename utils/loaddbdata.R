@@ -116,9 +116,15 @@ RetreiveDataSet <- function(tablename, column = "NA", colvalue= "NA") {
   return(df)
 }
 
-MarkDataForDeletion <- function(tablename, column = "NA", colvalue= "NA", delete=T) {
+MarkDataForDeletion <- function(type = "Meta", column = "NA", colvalue= "NA", delete=T) {
   queryString = "UPDATE"
-  queryString = paste(queryString,tablename)
+  if (type == "Meta") {
+    queryString = paste(queryString,db_table_meta)
+  } else if (type == "Event") {
+    queryString = paste(queryString,db_table_event)
+  } else if (type == "Sample") {
+    queryString = paste(queryString,db_table_sample)
+  }
   queryString = paste(queryString,"SET FlagDelete=")
   shouldDelete = 0
   if (delete) { shouldDelete = 1 }
