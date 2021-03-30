@@ -16,7 +16,7 @@ shinyServer(function(input, output, session) {
   r <- reactiveValues(df = NULL, meta = NULL, source = NULL)
 
   callModule(data_selection_summary,"input_info", reactive(r$df))
-  callModule(player_overview,"overview_panel", reactive(r$df))
+  callModule(player_overview,"overview_panel", reactive(r$df), reactive(r$meta))
   callModule(game_timeline,"timeline_panel", reactive(r$df))
 
   auth = read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character"))
@@ -33,11 +33,13 @@ shinyServer(function(input, output, session) {
   observeEvent(csv_data$trigger, {
     req(csv_data$trigger > 0)
     r$df <- csv_data$df
-    r$source <- 'csv data'
+    r$meta <- csv_data$df_meta
+    r$source <- min(as.character(csv_data$meta$SessionID, na.rm=T))
   })
   observeEvent(db_data$trigger, {
     req(db_data$trigger > 0)
     r$df <- db_data$df
+    r$meta <- db_data$df_meta
     r$source <- db_data$session
   })
   

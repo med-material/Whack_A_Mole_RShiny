@@ -23,14 +23,12 @@ shinyUI(fluidPage(
     ),
     #  Output ----------------
     tabsetPanel(id = "analysisChooser", type = "tabs",
-        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
-                 game_timeline_UI("timeline_panel")
-        ),
         tabPanel(value = "Player Overview", id = "PlayerOverview", strong("Player Overview"), icon=icon('user'),
-                 mainPanel(width = 12,
-                           player_overview_UI("overview_panel")
-                 )
-                 ),
+            player_overview_UI("overview_panel")
+        ),
+        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
+            game_timeline_UI("timeline_panel")
+        ),
         # Rest of Page ---------------------------------------------------------------
         tags$footer()
     )
