@@ -23,32 +23,14 @@ shinyUI(fluidPage(
     ),
     #  Output ----------------
     tabsetPanel(id = "analysisChooser", type = "tabs",
+        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
+                 game_timeline_UI("timeline_panel")
+        ),
         tabPanel(value = "Player Overview", id = "PlayerOverview", strong("Player Overview"), icon=icon('user'),
                  mainPanel(width = 12,
                            player_overview_UI("overview_panel")
                  )
                  ),
-        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
-                 sidebarPanel(width = 2,
-                      selectizeInput("timestampInput", "Timestamp", choices = NULL, selected = NULL, multiple = FALSE, options = NULL),
-                      selectizeInput("eventInput", "Event Data", choices = NULL, selected = NULL, multiple = FALSE, options = NULL),
-                      selectizeInput("eventTypeInput", "EventType Data", choices = NULL, selected = NULL, multiple = FALSE, options = NULL),
-                      selectizeInput("contInput", "Continuous Data", choices = NULL, selected = NULL, multiple = TRUE, options = NULL),
-                      selectizeInput("ignoreEventInput", "Ignore Events", choices = NULL, selected = NULL, multiple = TRUE, options = NULL)
-                 ),
-                 mainPanel(width = 10,
-                           fluidRow(
-                               column(8, plotlyOutput("timelinePlot"),tags$div(class = "vizcontrols-explainer")),
-                               column(4, plotlyOutput("gridPlot"))
-                           ),
-                           fluidRow(
-                               column(2, tableOutput("moleTable")),
-                               column(2, tableOutput("directionTable")),
-                               column(4, plotlyOutput("motorPlot")),
-                               column(4, plotlyOutput("eyePlot"))
-                           )
-                 ),
-        ),
         # Rest of Page ---------------------------------------------------------------
         tags$footer()
     )

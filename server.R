@@ -17,6 +17,7 @@ shinyServer(function(input, output, session) {
 
   callModule(data_selection_summary,"input_info", reactive(r$df))
   callModule(player_overview,"overview_panel", reactive(r$df))
+  callModule(game_timeline,"timeline_panel", reactive(r$df))
 
   auth = read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character"))
   connected = ConnectToServer(auth)
@@ -48,47 +49,4 @@ shinyServer(function(input, output, session) {
     insertUI(selector = "#DbButton", where = "afterEnd",
              ui = showModal(modalDialog(db_select_UI("selectData"), easyClose = TRUE)))
   })
-    
-  observeEvent(r$df, {
-    req(!is.na(r$df))
-        updateSelectizeInput(session,"timestampInput", choices = names(r$df), selected = "Timestamp.Event", server = FALSE)
-        updateSelectizeInput(session,"eventInput", choices = names(r$df), selected = "Event", server = FALSE)
-        updateSelectizeInput(session,"eventTypeInput", choices = names(r$df), selected = "EventType", server = FALSE)
-        updateSelectizeInput(session,"contInput", choices = names(r$df), selected = c("HeadCameraRotEulerX", "HeadCameraRotEulerY", "HeadCameraRotEulerZ", "HeadCameraPosWorldX","HeadCameraPosWorldY","HeadCameraPosWorldZ", "WorldGazeHitPositionX","WorldGazeHitPositionY","WorldGazeHitPositionZ","MolePositionWorldX","MolePositionWorldY","MolePositionWorldZ"), server = FALSE)
-        updateSelectizeInput(session,"ignoreEventInput", choices = unique(r$df$Event), selected = c("NoData", "Sample"), server = FALSE)
-  })
-    
-    output$timelinePlot <- renderPlotly({
-        validate(need(r$df, "Loading.."), errorClass = "vis")
-        validate(need(input$timestampInput, "Loading.."), errorClass = "vis")
-        vis_timeline_whack(r$df, input$timestampInput, input$eventInput, input$eventTypeInput,
-                     input$contInput, input$ignoreEventInput)
-    })
-    output$gridPlot <- renderPlotly({
-        validate(need(r$df, ""), errorClass = "vis")
-        validate(need(input$timestampInput, "Loading.."), errorClass = "vis")
-        select.data <- event_data(event = "plotly_selected")
-        vis_whackgrid(r$df, select.data, input$timestampInput, input$contInput)
-    })
-    output$moleTable <- renderTable({
-        req(r$df)
-        vis_moleTable(r$df)
-    })
-    output$directionTable <- renderTable({
-      req(r$df)
-      vis_directionTable(r$df, input$timestampInput)
-    })
-    output$eyePlot <- renderPlotly({
-        validate(need(r$df, ""), errorClass = "vis")
-        validate(need(input$timestampInput, "Loading.."), errorClass = "vis")
-        select.data <- event_data(event = "plotly_selected")
-        vis_eyePlot(r$df, select.data, input$timestampInput)
-    })
-    output$motorPlot <- renderPlotly({
-        validate(need(r$df, ""), errorClass = "vis")
-        validate(need(r$df$MotorSpaceName, "Motorspace Visualization Not Supported."), errorClass = "vis")
-        validate(need(input$timestampInput, "Loading.."), errorClass = "vis")
-        select.data <- event_data(event = "plotly_selected")
-        vis_motorspace(r$df, select.data, input$timestampInput)
-    })
 })
