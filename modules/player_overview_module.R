@@ -79,7 +79,7 @@ player_overview <- function(input, output, session, df, meta) {
     moles_hit = df() %>% filter(Event == "Mole Hit")
     speed_text = "0"
     if (nrow(moles_hit) > 0) {
-      speed = dplyr::summarise(speed = mean(MoleActivatedDuration))
+      speed = moles_hit %>% dplyr::summarise(speed = mean(MoleActivatedDuration, na.rm=T))
       speed_text = paste(sprintf("%.2f",speed),"s")
     }
     
@@ -105,12 +105,11 @@ player_overview <- function(input, output, session, df, meta) {
     if (length(unique(df()$GazeConfidence, na.rm=T)) > 1) { eyetracking = "On" }
     
     controller = "Unknown"
-    controller_left = df() %>% filter(Event == "Controller Main Set Left")
-    controller_right = df() %>% filter(Event == "Controller Main Set Right")
-    controller_both = df() %>% filter(Event == "Controller Main Set Both")
+    controller_left = df() %>% filter(MotorSpaceName == "MotorSpaceL")
+    controller_right = df() %>% filter(MotorSpaceName == "MotorSpaceR")
     if (nrow(controller_left) > 0) { controller = "Left" }
     if (nrow(controller_right) > 0) { controller = "Right" }
-    if (nrow(controller_both) > 0) { controller = "Both" }
+    if (nrow(controller_left) > 0 && nrow(controller_right) > 0) { controller = "Both" }
 
     table <- tibble(x = c(), y = c())
      table <- table %>% add_row(x = "Treatment Program:", y = as.character(df()[1,]$SessionProgram)) %>%
@@ -160,7 +159,8 @@ player_overview <- function(input, output, session, df, meta) {
     req(!is.null(meta()))
     
     profile_id = df()[1,]$ProfileID
-    prev_sessions <<- meta() %>% filter(ProfileID == profile_id) %>% select(Timestamp) %>%
+    prev_sessions <- meta() %>% filter(ProfileID == profile_id) %>% select(Timestamp) 
+    prev_sessions <- prev_sessions %>%
       mutate(p_wday = wday(as.character(prev_sessions$Timestamp), abbr = F, label=T),
              p_date = format(date(as.character(prev_sessions$Timestamp)), "%d %b %Y"),
              p_time = sprintf("%02d:%02d", hour(as.character(prev_sessions$Timestamp)), minute(as.character(prev_sessions$Timestamp))),
