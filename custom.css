@@ -15,6 +15,11 @@ header #whack-logo {
     max-width: 250px;
 }
 
+#overall-nav {
+    min-width: 7.2rem;
+    font-size: 1.1rem;
+}
+
 button#visButton {
     margin-top: 20px;
 }
@@ -37,7 +42,7 @@ footer {
 }
 
 .separated {
-  margin-right 12px;
+  margin-right: 12px;
   margin-left: 12px;
 }
 
@@ -60,7 +65,7 @@ footer {
     display: inline-block;
 }
 
-.tab-content > .active {
+.tab-pane > .main-content {
     margin-top: 3em;
 }
 

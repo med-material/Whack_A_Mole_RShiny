@@ -21,15 +21,29 @@ shinyUI(fluidPage(
         actionButton("CsvButton","Manual Upload"),
         tags$div(class = "d-inline-block separated", data_selection_summary_UI("input_info"))
     ),
-    #  Output ----------------
-    tabsetPanel(id = "analysisChooser", type = "tabs",
-        tabPanel(value = "Player Overview", id = "PlayerOverview", strong("Player Overview"), icon=icon('user'),
-            player_overview_UI("overview_panel")
+    navlistPanel(fluid= FALSE, widths=c(1,11), well = FALSE, id = "overall-nav",
+        tabPanel(title = div(class="text-center", img(src='nav_individual.svg', style="max-width:100%;"),tags$br(),"Individual"),
+            #  Output ----------------
+            tabsetPanel(id = "analysisChooser", type = "tabs",
+                tabPanel(value = "Player Overview", id = "PlayerOverview", strong("Player Overview"), icon=icon('user'),
+                    div(class="main-content", player_overview_UI("overview_panel"))
+                ),
+                tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
+                    div(class="main-content", game_timeline_UI("timeline_panel"))
+                ),
+                # Rest of Page ---------------------------------------------------------------
+                tags$footer()
+            )
         ),
-        tabPanel(value  = "Time (X-axis)", id = "Timeline", strong("Timeline"), icon = icon('chart-bar'),
-            game_timeline_UI("timeline_panel")
+        tabPanel(title = div(class="text-center", img(src='nav_trends.svg', style="max-width:100%;"),tags$br(),"Trends"),
+                 tabPanel(value = "Under Construction", id = "TrendsOverview", strong("Player Overview"), icon=icon('user'),
+                          div(class="main-content", tags$p("Under Construction.."))
+                 ),
         ),
-        # Rest of Page ---------------------------------------------------------------
-        tags$footer()
+        tabPanel(title = div(class="text-center", img(src='nav_plan.svg', style="max-width:100%;"),tags$br(),"Plan"),
+                 tabPanel(value = "Under Construction", id = "PlanOverview", strong("Player Overview"), icon=icon('user'),
+                          div(class="main-content", tags$p("Under Construction.."))
+                 ),
+        )
     )
 ))
