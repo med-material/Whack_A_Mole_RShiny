@@ -3,6 +3,12 @@ library(plotly)
 library(lubridate)
 library(plyr)
 library(dplyr)
+
+# Always get full stack trace
+options(shiny.fullstacktrace=TRUE)
+# Show milliseconds on timestamps
+options("digits.secs"=6)
+
 source("modules/csv_upload_module.R", local = T)
 source("modules/db_select_module.R", local = T)
 source("modules/db_session_row_module.R", local = T)
