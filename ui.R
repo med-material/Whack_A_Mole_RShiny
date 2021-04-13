@@ -14,13 +14,14 @@ library(shinyjs)
 shinyUI(fluidPage(
     includeCSS("custom.css"),
     useShinyjs(),
-    tags$header(
+    tags$header(fluidRow(
         # Input ----------------
-        img(src='whack_icon.svg', id="whack-logo"),
-        actionButton("DbButton", "Change Data"),
-        actionButton("CsvButton","Manual Upload"),
-        tags$div(class = "d-inline-block separated", data_selection_summary_UI("input_info"))
-    ),
+        column(1,div(class="text-center",img(src='whack_icon.svg', id="whack-logo"))),
+        column(11,actionButton("DbButton", "Change Data"),
+               actionButton("CsvButton","Manual Upload"),
+               tags$div(class = "d-inline-block separated", data_selection_summary_UI("input_info"))
+        )
+    )),
     navlistPanel(fluid= FALSE, widths=c(1,11), well = FALSE, id = "overall-nav",
         tabPanel(title = div(class="text-center", img(src='nav_individual.svg', style="max-width:100%;"),tags$br(),"Individual"),
             #  Output ----------------

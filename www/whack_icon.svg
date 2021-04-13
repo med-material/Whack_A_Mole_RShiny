@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="40"
-   height="40"
-   viewBox="0 0 10.583333 10.583334"
+   width="50"
+   height="50"
+   viewBox="0 0 13.229166 13.229168"
    version="1.1"
    id="svg88859"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
    sodipodi:docname="whack_icon.svg">
   <defs
      id="defs88853" />
@@ -26,8 +24,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.919596"
-     inkscape:cx="9.6114486"
-     inkscape:cy="38.769049"
+     inkscape:cx="23.942988"
+     inkscape:cy="44.829964"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -36,11 +34,12 @@
      fit-margin-right="1"
      fit-margin-bottom="1"
      units="px"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1566"
+     inkscape:window-height="1208"
+     inkscape:window-x="543"
+     inkscape:window-y="192"
+     inkscape:window-maximized="0"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata88856">
     <rdf:RDF>
@@ -58,54 +57,58 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-81.654491,-125.51682)">
-    <circle
-       style="opacity:1;fill:#ececec;fill-opacity:1;stroke:none;stroke-width:0.06107818;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path817"
-       cx="86.950134"
-       cy="131.20876"
-       r="4.3933783" />
     <g
-       id="g48528-5-0-3-8"
-       transform="matrix(0.54365472,0,0,0.54365472,-1277.1499,1022.7498)"
-       style="stroke-width:1.28661537"
-       inkscape:export-filename="C:\Users\biho\aau-projects\Whack-a-Mole VR\r-shiny-ui-individual\r-shiny-individual-player-overview.png"
-       inkscape:export-xdpi="141.70305"
-       inkscape:export-ydpi="141.70305">
-      <path
-         sodipodi:type="star"
-         style="fill:#62e76a;fill-opacity:1;stroke:none;stroke-width:1.91190052;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path1019-6-8-0-4-7-9-7"
-         sodipodi:sides="9"
-         sodipodi:cx="360.33173"
-         sodipodi:cy="-191.29768"
-         sodipodi:r1="9.2062922"
-         sodipodi:r2="4.6031456"
-         sodipodi:arg1="1.3849755"
-         sodipodi:arg2="1.7340414"
-         inkscape:flatsided="false"
-         inkscape:rounded="0"
-         inkscape:randomized="0"
-         d="m 362.03262,-182.24988 -2.449,-4.50586 -3.76475,3.48239 1.02026,-5.02587 -5.1224,0.24772 4.01214,-3.19423 -4.08322,-3.10284 5.12669,0.13203 -1.13346,-5.00156 3.8424,3.39651 2.34666,-4.55999 0.76021,5.07173 4.72876,-1.98475 -2.67769,4.37382 4.89821,1.51918 -4.86267,1.62936 2.77574,4.31226 -4.77235,-1.8775 z"
-         inkscape:transform-center-x="-0.29598453"
-         inkscape:transform-center-y="0.11802559"
-         transform="matrix(0.51865255,-0.11949845,0.11949845,0.51865255,2341.8983,-1502.2624)" />
-      <path
-         style="fill:#000000;stroke-width:0.34676686"
-         d="m 2516.3043,-1633.0854 c 0.09,0.1875 0.2918,0.5992 0.1324,0.9557 -0.121,0.2703 -0.2203,0.3401 -0.6292,0.4427 -0.4336,0.1088 -0.5237,0.093 -0.8422,-0.1502 v 10e-5 c -0.4727,-0.3606 -3.0424,-4.1818 -4.1824,-6.2196 -0.1916,-0.3426 -0.3741,-0.5963 -0.4056,-0.5639 -0.062,0.064 -1.1016,0.186 -1.5588,0.1835 -0.2269,0 -0.2695,0.031 -0.2219,0.1682 0.04,0.1163 -0.04,0.2245 -0.254,0.3432 -0.2618,0.145 -0.3583,0.1478 -0.5925,0.018 -0.3405,-0.1897 -0.3164,-0.3805 0.1511,-1.1964 0.1717,-0.2998 0.3041,-0.5776 0.2941,-0.6174 -0.011,-0.04 0.035,-0.1602 0.099,-0.2676 0.092,-0.1538 0.3483,-0.2534 1.2033,-0.468 0.5974,-0.1498 1.0638,-0.3618 1.0638,-0.3618 l 0.1579,-0.01 0.4376,-0.023 c 0.3447,-0.018 0.5491,0.057 0.9612,0.3569 0.288,0.2091 0.548,0.4625 0.5778,0.5631 0.031,0.1035 0.062,0.1236 0.073,0.046 0.033,-0.2387 0.2796,-0.2136 0.6274,0.064 0.4222,0.3368 0.4416,0.4187 0.1793,0.7576 l -0.2115,0.2736 -0.2665,-0.2629 c -0.1466,-0.1445 -0.3594,-0.2638 -0.5923,-0.3083 -0.233,-0.045 -0.4588,0 -0.6998,0.014 -0.2932,0.019 -0.4085,0.057 -0.5523,0.2564 -0.1438,0.1992 -0.1534,0.293 -0.1708,0.3837 -0.018,0.091 0.035,0.2302 0.2004,0.4865 0.2524,0.3901 0.505,0.6001 0.4479,0.3724 -0.014,-0.058 0.066,-0.1284 0.1782,-0.1567 0.1197,-0.03 0.1885,-3e-4 0.1657,0.071 -0.059,0.1855 0.3577,0.3186 0.7227,0.2309 0.3686,-0.089 0.478,0.056 0.1579,0.2084 -0.1168,0.056 -0.028,0.048 0.1983,-0.016 0.2259,-0.064 0.3981,-0.1378 0.3826,-0.163 -0.016,-0.025 0.023,-0.1759 0.083,-0.335 0.061,-0.1591 0.1232,-0.2459 0.1375,-0.193 0.014,0.053 0.4815,0.9795 1.0379,2.0593 0.5565,1.0797 1.0041,1.9673 0.9948,1.9725 z"
-         id="path920-2-4-3-9-2-0-5"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccscccccccccssscccccccccccccccsscccccscccc" />
-      <path
-         style="fill:#ffffff;fill-opacity:1;stroke-width:0.34676686"
-         d="m 2505.9817,-1646.0465 c -0.1896,0.01 -0.3114,0.08 -0.552,0.2908 -0.4293,0.3771 -0.6386,0.9451 -0.5406,1.4675 0.077,0.4124 0.4024,0.8667 0.7163,1.0012 0.314,0.1345 0.9769,0.038 1.2836,-0.1866 1.0623,-0.778 0.6312,-2.3799 -0.6881,-2.5569 -0.085,-0.011 -0.1559,-0.018 -0.2192,-0.016 z"
-         id="path886-8-6-4-7-5-0-3-8"
-         inkscape:connector-curvature="0" />
-      <path
-         sodipodi:nodetypes="ccccc"
-         inkscape:connector-curvature="0"
-         id="rect2160-6-6-9-0-3-9"
-         d="m 2506.6915,-1644.3001 h 0.1025 l 3.3107,2.9277 -1.1902,0.5237 z"
-         style="fill:#6d6d6d;fill-opacity:1;stroke:none;stroke-width:0.74049711;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       id="g842"
+       transform="translate(0.28326501,0.01253388)">
+      <circle
+         style="opacity:1;fill:#ececec;fill-opacity:1;stroke:none;stroke-width:0.0810499;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path817"
+         cx="87.985809"
+         cy="132.56801"
+         r="5.8299518" />
+      <g
+         id="g48528-5-0-3-8"
+         transform="matrix(0.72142227,0,0,0.72142227,-1722.156,1315.6306)"
+         style="stroke-width:1.28662"
+         inkscape:export-filename="C:\Users\biho\aau-projects\Whack-a-Mole VR\r-shiny-ui-individual\r-shiny-individual-player-overview.png"
+         inkscape:export-xdpi="141.70305"
+         inkscape:export-ydpi="141.70305">
+        <path
+           sodipodi:type="star"
+           style="fill:#62e76a;fill-opacity:1;stroke:none;stroke-width:1.9119;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="path1019-6-8-0-4-7-9-7"
+           sodipodi:sides="9"
+           sodipodi:cx="360.33173"
+           sodipodi:cy="-191.29768"
+           sodipodi:r1="9.2062922"
+           sodipodi:r2="4.6031456"
+           sodipodi:arg1="1.3849755"
+           sodipodi:arg2="1.7340414"
+           inkscape:flatsided="false"
+           inkscape:rounded="0"
+           inkscape:randomized="0"
+           d="m 362.03262,-182.24988 -2.449,-4.50586 -3.76475,3.48239 1.02026,-5.02587 -5.1224,0.24772 4.01214,-3.19423 -4.08322,-3.10284 5.12669,0.13203 -1.13346,-5.00156 3.8424,3.39651 2.34666,-4.55999 0.76021,5.07173 4.72876,-1.98475 -2.67769,4.37382 4.89821,1.51918 -4.86267,1.62936 2.77574,4.31226 -4.77235,-1.8775 z"
+           inkscape:transform-center-x="-0.29598453"
+           inkscape:transform-center-y="0.11802559"
+           transform="matrix(0.51865255,-0.11949845,0.11949845,0.51865255,2341.8983,-1502.2624)" />
+        <path
+           style="fill:#000000;stroke-width:0.346767"
+           d="m 2516.3043,-1633.0854 c 0.09,0.1875 0.2918,0.5992 0.1324,0.9557 -0.121,0.2703 -0.2203,0.3401 -0.6292,0.4427 -0.4336,0.1088 -0.5237,0.093 -0.8422,-0.1502 v 10e-5 c -0.4727,-0.3606 -3.0424,-4.1818 -4.1824,-6.2196 -0.1916,-0.3426 -0.3741,-0.5963 -0.4056,-0.5639 -0.062,0.064 -1.1016,0.186 -1.5588,0.1835 -0.2269,0 -0.2695,0.031 -0.2219,0.1682 0.04,0.1163 -0.04,0.2245 -0.254,0.3432 -0.2618,0.145 -0.3583,0.1478 -0.5925,0.018 -0.3405,-0.1897 -0.3164,-0.3805 0.1511,-1.1964 0.1717,-0.2998 0.3041,-0.5776 0.2941,-0.6174 -0.011,-0.04 0.035,-0.1602 0.099,-0.2676 0.092,-0.1538 0.3483,-0.2534 1.2033,-0.468 0.5974,-0.1498 1.0638,-0.3618 1.0638,-0.3618 l 0.1579,-0.01 0.4376,-0.023 c 0.3447,-0.018 0.5491,0.057 0.9612,0.3569 0.288,0.2091 0.548,0.4625 0.5778,0.5631 0.031,0.1035 0.062,0.1236 0.073,0.046 0.033,-0.2387 0.2796,-0.2136 0.6274,0.064 0.4222,0.3368 0.4416,0.4187 0.1793,0.7576 l -0.2115,0.2736 -0.2665,-0.2629 c -0.1466,-0.1445 -0.3594,-0.2638 -0.5923,-0.3083 -0.233,-0.045 -0.4588,0 -0.6998,0.014 -0.2932,0.019 -0.4085,0.057 -0.5523,0.2564 -0.1438,0.1992 -0.1534,0.293 -0.1708,0.3837 -0.018,0.091 0.035,0.2302 0.2004,0.4865 0.2524,0.3901 0.505,0.6001 0.4479,0.3724 -0.014,-0.058 0.066,-0.1284 0.1782,-0.1567 0.1197,-0.03 0.1885,-3e-4 0.1657,0.071 -0.059,0.1855 0.3577,0.3186 0.7227,0.2309 0.3686,-0.089 0.478,0.056 0.1579,0.2084 -0.1168,0.056 -0.028,0.048 0.1983,-0.016 0.2259,-0.064 0.3981,-0.1378 0.3826,-0.163 -0.016,-0.025 0.023,-0.1759 0.083,-0.335 0.061,-0.1591 0.1232,-0.2459 0.1375,-0.193 0.014,0.053 0.4815,0.9795 1.0379,2.0593 0.5565,1.0797 1.0041,1.9673 0.9948,1.9725 z"
+           id="path920-2-4-3-9-2-0-5"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccscccccccccssscccccccccccccccsscccccscccc" />
+        <path
+           style="fill:#ffffff;fill-opacity:1;stroke-width:0.346767"
+           d="m 2505.9817,-1646.0465 c -0.1896,0.01 -0.3114,0.08 -0.552,0.2908 -0.4293,0.3771 -0.6386,0.9451 -0.5406,1.4675 0.077,0.4124 0.4024,0.8667 0.7163,1.0012 0.314,0.1345 0.9769,0.038 1.2836,-0.1866 1.0623,-0.778 0.6312,-2.3799 -0.6881,-2.5569 -0.085,-0.011 -0.1559,-0.018 -0.2192,-0.016 z"
+           id="path886-8-6-4-7-5-0-3-8"
+           inkscape:connector-curvature="0" />
+        <path
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0"
+           id="rect2160-6-6-9-0-3-9"
+           d="m 2506.6915,-1644.3001 h 0.1025 l 3.3107,2.9277 -1.1902,0.5237 z"
+           style="fill:#6d6d6d;fill-opacity:1;stroke:none;stroke-width:0.740497;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
     </g>
   </g>
 </svg>
