@@ -10,36 +10,37 @@ LoadFromFilePaths <- function(filePathMeta, filePathEvent, filePathSample) {
   return(dataset)
 }
 
-LoadFromDirectory <- function(dir, event = "Event", sample = "Sample", meta = "Meta") {
-  dir = "logData/testModifiers"
-  event = "Event"
-  sample = "Sample"
-  meta = "Meta"
-  paste("*",event,".csv",sep="")
+LoadFromDirectory <- function(dir, delim = ";", event = "Event", sample = "Sample", meta = "Meta") {
+  #delim = ";"
+  #dir = "Logs"
+  #event = "Game"
+  #sample = "Sample"
+  #meta = "Meta"
+  #
   #main game event data
   df_event <- list.files(recursive=TRUE ,path = dir,
-                         pattern = event,
+                         pattern = paste("*",event,".csv",sep=""),
                          full.names = T) %>% 
     tibble(filename = .) %>%   
-    mutate(file_contents = map(filename,~ read_csv(file.path(.),na = "NULL")))  %>% 
+    mutate(file_contents = map(filename,~ read_delim(file.path(.),delim,col_names=T, na = "NULL")))  %>% 
     unnest(cols=-filename) %>%
     mutate(file_contents = NULL)
   
   #sample data
   df_sample <- list.files(recursive=TRUE ,path = dir,
-                          pattern = sample, 
+                          pattern = paste("*",sample,".csv",sep=""), 
                           full.names = T) %>% 
     tibble(filename = .) %>%   
-    mutate(file_contents = map(filename,~ read_csv(file.path(.),na = "NULL")))  %>% 
+    mutate(file_contents = map(filename,~ read_delim(file.path(.), delim, na = "NULL")))  %>% 
     unnest(cols=-filename) %>%
     mutate(file_contents = NULL)
   
   #meta data
   df_meta <- list.files(recursive=TRUE ,path = dir,
-                        pattern = meta, 
+                        pattern = paste("*",meta,".csv",sep=""), 
                         full.names = T) %>% 
     tibble(filename = .) %>%   
-    mutate(file_contents = map(filename,~ read_csv(file.path(.),na = "NULL")))  %>% 
+    mutate(file_contents = map(filename,~ read_delim(file.path(.), delim, na = "NULL")))  %>% 
     unnest(cols=-filename) %>% 
     separate(col=filename,sep="_",into=c("i5","i6","i7","i8","i9"), remove=F) %>%
     separate(col=filename,sep="/",into=c("i0","i1","i2","i3","i4"), remove=T) %>%
