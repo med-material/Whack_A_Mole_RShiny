@@ -24,12 +24,12 @@ shinyUI(fluidPage(
     )),
     navlistPanel(fluid= FALSE, widths=c(1,11), well = FALSE, id = "overall-nav",
         tabPanel(title = div(class="text-center", img(src='nav_individual.svg', style="max-width:100%;"),tags$br(),"Individual"),
-                 navlistPanel(id = "analysisChooser", well= FALSE, widths=c(2,8), fluid = FALSE,
+                 navlistPanel(id = "analysisChooser", well= FALSE, widths=c(2,10), fluid = FALSE,
                    tabPanel(value = "Player Overview", id = "PlayerOverview", HTML("Player Overview<br><small>See overview information.</small>"),
                             div(class="main-content", player_overview_UI("overview_panel"))
                    ),
                    tabPanel(value  = "Game Performance", id = "GamePerf", HTML("Game Performance<br><small>Successful hits, misses and speed.</small>"),
-                            div(class="main-content", tags$p("Under Construction.."))
+                            div(class="main-content", individual_game_performance_UI("individual_game_performance"))
                    ),
                    tabPanel(value  = "Head Movement", id = "HeadMove", HTML("Head Movement<br><small>Position and orientation of the head.</small>"),
                             div(class="main-content", tags$p("Under Construction.."))
@@ -42,9 +42,7 @@ shinyUI(fluidPage(
                    ),
                    tabPanel(value  = "Time (X-axis)", id = "Timeline", HTML("Timeline<br><small>Replay the game from start to end.</small>"),
                             div(class="main-content", game_timeline_UI("timeline_panel"))
-                   ),
-                    # Rest of Page ---------------------------------------------------------------
-                    tags$footer()
+                   )
                 )
         ),
         tabPanel(title = div(class="text-center", img(src='nav_trends.svg', style="max-width:100%;"),tags$br(),"Trends"),
@@ -55,7 +53,9 @@ shinyUI(fluidPage(
         tabPanel(title = div(class="text-center", img(src='nav_plan.svg', style="max-width:100%;"),tags$br(),"Plan"),
                  tabPanel(value = "Under Construction", id = "PlanOverview", strong("Player Overview"), icon=icon('user'),
                           div(class="main-content", tags$p("Under Construction.."))
-                 ),
+                 )
         )
-    )
+    ),
+    # Rest of Page ---------------------------------------------------------------
+    tags$footer()
 ))

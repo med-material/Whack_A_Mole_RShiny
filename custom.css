@@ -20,6 +20,19 @@ button#visButton {
     margin-top: 20px;
 }
 
+.mini-progress-bar {
+	background-color: #e0e0e0;
+	padding: 2px;
+	border-radius: 2px;
+}
+
+.mini-progress-bar-fill {
+	display: block;
+	height: 12px;
+	background-color: #659cef;
+	border-radius: 2px;
+}
+
 .tab-content {
     min-height: 50%;
 }
