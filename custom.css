@@ -24,6 +24,12 @@ button#visButton {
     min-height: 50%;
 }
 
+.tab-content .nav a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 footer {
     background: no-repeat url("hmi-lab.svg");
     height: 50px;
