@@ -3,7 +3,8 @@ individual_game_performance_UI <- function(id) {
   mainPanel(width = 12,
     fluidRow(
              tags$h3("Whack Performance Over Time"),
-             tags$p("Timeline plot. accumulative plot. Under construction..")
+             #tags$p("Timeline plot. accumulative plot. Under construction..")
+             plot_scatter_timeline_UI(ns("ind_mole_hit"))
              # Call to action:
              # Choose Measurement Type: Moles Hit + Distractors Hit? Speed?
              # Reset Graph (Visible button)
@@ -13,19 +14,77 @@ individual_game_performance_UI <- function(id) {
              #uiOutput(ns("session_info"))
              ),
     fluidRow(
-      tags$h3("Whack Performance Left/Right"),
-             uiOutput(ns("moles_whack_lr"))
+      tags$h3("Whack Performance Left/Right")
+    ),
+    fluidRow(
+      column(6, uiOutput(ns("moles_whack_lr"))),
+      column(6, uiOutput(ns("moles_speed_lr")))
     )
   )
 }
 
 individual_game_performance <- function(input, output, session, df, meta) {
   ns <- session$ns
-  
-  # Calculating Whack Speed:
-  # Median reaction time for each mole.
-  
+  observe({
+    req(!is.na(df()))
+    req(!is.null(df()))
+    callModule(plot_scatter_timeline, "ind_mole_hit", df)
+  })
 
+
+  output$moles_speed_lr <- renderUI({
+    req(!is.na(df()))
+    req(!is.null(df()))
+    
+    moleEvents = c("Mole Hit")
+    mole_aggr = df() %>%
+      filter(Event %in% moleEvents) %>%
+      dplyr::mutate(mole_lr = "Center", 
+                    mole_lr = ifelse(MolePositionWorldX > 0, "Right", mole_lr),
+                    mole_lr = ifelse(MolePositionWorldX < 0, "Left", mole_lr)) %>%
+      group_by(Event, mole_lr) %>% 
+      dplyr::summarise(speed = mean(MoleActivatedDuration, na.rm=T)) %>%
+      mutate(speed_text = sprintf("%.2f",speed),
+             speed_pct = (5 - speed) / 5 * 100 ) %>%
+      ungroup()
+    #browser()
+    #speed = moles_hit %>% dplyr::summarise(speed = mean(MoleActivatedDuration, na.rm=T))
+    #speed_text = paste(sprintf("%.2f",speed),"s")
+    
+    #mole_aggr[["Mole Hit"]] / mole_aggr[["Mole Spawned"]]
+    
+    mole_hit_text = "No data available."
+    if (length(mole_aggr[["Event"]]) > 0) {
+      #browser()
+      mole_speed_left_text = paste("<strong>Left Speed:</strong>",
+                                 mole_aggr %>% filter(mole_lr == "Left") %>% select(speed_text),
+                                 "seconds.")
+      mole_speed_right_text = paste("<strong>Right Speed::</strong>",
+                                  mole_aggr %>% filter(mole_lr == "Right") %>% select(speed_text),
+                                  "seconds.")
+    
+    progress_left = tags$span("",class="mini-progress-bar-fill",style=paste0("width:",mole_aggr %>% filter(mole_lr == "Left") %>% select(speed_pct), "%;"))
+    progress_right = tags$span("",class="mini-progress-bar-fill",style=paste0("width:",mole_aggr %>% filter(mole_lr == "Right") %>% select(speed_pct), "%;"))
+    
+    ui <- HTML(paste(
+      "<p style='text-align:left;'>",
+      mole_speed_left_text,
+      "</p>",
+      "<div class='mini-progress-bar' style='width:100px;'>",
+      progress_left,
+      "</div><br>",
+      "<p style='text-align:left;'>",
+      mole_speed_right_text,
+      "</p>",
+      "<div class='mini-progress-bar' style='width:100px;'>",
+      progress_right,
+      "</div>"
+    ))
+    } else {
+      ui <- HTML(paste(mole_hit_text))
+    }
+    return(ui)
+  })  
   
   output$moles_whack_lr <- renderUI({
     req(!is.na(df()))
@@ -33,7 +92,9 @@ individual_game_performance <- function(input, output, session, df, meta) {
     moleEvents = c("Mole Spawned", "Mole Hit")
     mole_aggr = df() %>%
       filter(Event %in% moleEvents) %>%
-      dplyr::mutate(mole_lr = ifelse(MolePositionWorldX > 0, "Right", "Left")) %>%
+      dplyr::mutate(mole_lr = "Center", 
+                    mole_lr = ifelse(MolePositionWorldX > 0, "Right", mole_lr),
+                    mole_lr = ifelse(MolePositionWorldX < 0, "Left", mole_lr)) %>%
       group_by(Event, mole_lr) %>% 
       dplyr::summarise(Count = n()) %>% pivot_wider(names_from = "Event", values_from="Count") %>%
       mutate(percentage = (`Mole Hit` / `Mole Spawned`) * 100)

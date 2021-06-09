@@ -61,6 +61,11 @@ footer {
   margin-left: 12px;
 }
 
+.contextual-toolbar > * {
+  float: left;
+  margin: 0 24px;
+}
+
 .shiny-output-error-vis {
 
     color: #888;
@@ -92,7 +97,7 @@ footer {
 /* Styling of Check-boxes :horizontal */
 .checkbox-inline, .radio-inline {
     padding: 0;
-    padding-top: 5px;
+    padding-top: 2px;
 }
 
 .checkbox-inline + .checkbox-inline {
@@ -103,10 +108,11 @@ footer {
 }
 
 .form-group input[type="checkbox"] ~span {
-    background: #D1D3D4;
+    background: #efefef;
     border-radius: 3px 3px 3px 3px;
     color: #888;
-    border: 1px solid #D1D3D4;
+    border: 1px solid #efefef;
+    padding: 0 3px;
 }
 
 .form-group input[type="checkbox"]:checked ~span {
@@ -135,12 +141,11 @@ footer {
     cursor: pointer;
 }
 
+.form-group > label {
+  display: none;
+}
+
 label {
     margin-bottom: 0;
     font-weight: normal;
-}
-
-#pidChooser {
-    text-align: right;
-    margin-right: 25px;
 }
