@@ -14,7 +14,6 @@ header {
 #overall-nav {
     min-width: 7.2rem;
     font-size: 1.1rem;
-    position: fixed;
 }
 
 button#visButton {
