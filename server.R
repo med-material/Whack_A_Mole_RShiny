@@ -7,9 +7,6 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-options(shiny.maxRequestSize=50*1024^2)
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
