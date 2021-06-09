@@ -18,8 +18,8 @@ plot_grid_performance_UI <- function(id) {
         #                             selected = c("Left", "Right", "Center"), inline = TRUE),
       )
     ),
-    fluidRow(
-      plotlyOutput(ns("gridPlot"), width="600px"),
+    fluidRow(class="vis-plot",
+      plotlyOutput(ns("gridPlot")),
     ),
     fluidRow(
       tags$div(class = "vizcontrols-explainer")
@@ -109,7 +109,7 @@ plot_grid_performance <- function(input, output, session, df) {
     }
     
     fig <- fig %>%
-      layout(yaxis=list(titlefont = list(size=1), title=NULL), xaxis=list(titlefont = list(size=1), title=NULL))
+      layout(yaxis=list(titlefont = list(size=0), title=" "), xaxis=list(titlefont = list(size=0), title=" "))
     
     return(fig)
   })

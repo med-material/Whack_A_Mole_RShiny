@@ -2,20 +2,24 @@ individual_game_performance_UI <- function(id) {
   ns = NS(id)
   mainPanel(width = 12,
     fluidRow(
-             tags$h3("Whack Performance Over Time"),
-             plot_scatter_timeline_UI(ns("ind_mole_hit"))
-             ),
+      tags$h3("Spatial Whack Performance", class="page-header"),
+      tags$p("Shows the player's hitting performance in seconds on a visual grid
+              representing the Whack-A-Mole wall."),
+      plot_grid_performance_UI(ns("grid_mole_hit"))
+    ),
     fluidRow(
-      tags$h3("Whack Performance Left/Right")
+      tags$h3("Performance Summary", class="page-header")
     ),
     fluidRow(
       column(6, uiOutput(ns("moles_whack_lr"))),
       column(6, uiOutput(ns("moles_speed_lr")))
     ),
     fluidRow(
-      tags$h3("Spatial Whack Performance"),
-      plot_grid_performance_UI(ns("grid_mole_hit"))
-    ),
+      tags$h3("Whack Performance Over Time", class="page-header"),
+      tags$p("Player hitting performance, on a scale between 0 and 5 seconds,
+              from game start to finish."),
+      plot_scatter_timeline_UI(ns("ind_mole_hit"))
+    )
   )
 }
 

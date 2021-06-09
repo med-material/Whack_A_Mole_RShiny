@@ -18,7 +18,7 @@ plot_scatter_timeline_UI <- function(id) {
                                      selected = c("Left", "Right", "Center"), inline = TRUE),
       )
     ),
-    fluidRow(
+    fluidRow(class="vis-plot",
       plotlyOutput(ns("timelinePlot")),
     ),
     fluidRow(
@@ -106,7 +106,7 @@ plot_scatter_timeline <- function(input, output, session, df) {
             add_trace(data=moles_hit, x =~GameTimeSpent, y =~MoleActivatedDuration,
             type='scattergl',mode='markers') %>%
             layout(
-              yaxis=list(range=c(0,5), title="Hitting Speed"),
+              yaxis=list(range=c(0,5), title=" ", titlefont = list(size=0)),
               xaxis=list(range=c(0,max(df_vis$GameTimeSpent, na.rm=T) + 10), title="Game Time (seconds)")
             )
     
