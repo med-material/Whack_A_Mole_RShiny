@@ -3,15 +3,7 @@ individual_game_performance_UI <- function(id) {
   mainPanel(width = 12,
     fluidRow(
              tags$h3("Whack Performance Over Time"),
-             #tags$p("Timeline plot. accumulative plot. Under construction..")
              plot_scatter_timeline_UI(ns("ind_mole_hit"))
-             # Call to action:
-             # Choose Measurement Type: Moles Hit + Distractors Hit? Speed?
-             # Reset Graph (Visible button)
-             # Scroll to zoom indicator.
-             
-             #Call to graph module here.
-             #uiOutput(ns("session_info"))
              ),
     fluidRow(
       tags$h3("Whack Performance Left/Right")
@@ -19,7 +11,11 @@ individual_game_performance_UI <- function(id) {
     fluidRow(
       column(6, uiOutput(ns("moles_whack_lr"))),
       column(6, uiOutput(ns("moles_speed_lr")))
-    )
+    ),
+    fluidRow(
+      tags$h3("Spatial Whack Performance"),
+      plot_grid_performance_UI(ns("grid_mole_hit"))
+    ),
   )
 }
 
@@ -29,6 +25,7 @@ individual_game_performance <- function(input, output, session, df, meta) {
     req(!is.na(df()))
     req(!is.null(df()))
     callModule(plot_scatter_timeline, "ind_mole_hit", df)
+    callModule(plot_grid_performance, "grid_mole_hit", df)
   })
 
 
