@@ -11,7 +11,7 @@ plot_scatter_timeline_UI <- function(id) {
       tags$div(class='contextual-toolbar', 
         actionButton(ns("resetPlot"), "Reset Plot"),
         checkboxGroupInput(ns("moleFilter"), label = " ",
-                                     choices = c("Hits" = "Mole Hit", "Misses" = "Mole Missed","Distractors" = "Fake Mole Hit"),
+                                     choices = c("Hits" = "Mole Hit", "Misses" = "Mole Expired","Distractors" = "Fake Mole Hit"),
                                      selected = c("Mole Hit"), inline = TRUE),
         checkboxGroupInput(ns("leftRightFilter"), label = " ",
                                      choices = c("Left", "Right", "Center"),
@@ -48,17 +48,17 @@ plot_scatter_timeline <- function(input, output, session, df) {
   # Add counts to our checkbox groups.
   observeEvent(df, {
     df_c <- df()
-    counts = df_c %>% filter(Event %in% c("Mole Hit", "Mole Missed", "Fake Mole Hit")) %>%
+    counts = df_c %>% filter(Event %in% c("Mole Hit", "Mole Expired", "Fake Mole Hit")) %>%
       group_by(Event) %>%
       dplyr::summarize(Count = n()) %>%
       pivot_wider(names_from = "Event", values_from="Count")
     
     hitlabel = paste0("Hits (",counts[["Mole Hit"]]  %>% replace(is.null(.), "0"), ")")
-    misslabel = paste0("Misses (",counts[["Mole Missed"]]  %>% replace(is.null(.), "0"), ")")
+    misslabel = paste0("Misses (",counts[["Mole Expired"]]  %>% replace(is.null(.), "0"), ")")
     distlabel = paste0("Distractors (",counts[["Fake Mole Hit"]]  %>% replace(is.null(.), "0"), ")")
     
     new_choices = c(hitlabel, misslabel,distlabel)
-    new_choiceValues = c("Mole Hit", "Mole Missed", "Fake Mole Hit")
+    new_choiceValues = c("Mole Hit", "Mole Expired", "Fake Mole Hit")
     
     updateCheckboxGroupInput(session, label = NULL, inputId = "moleFilter", 
                              choiceNames = new_choices, 
