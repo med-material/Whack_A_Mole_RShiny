@@ -31,7 +31,7 @@ shinyUI(fluidPage(
                             div(class="main-content", individual_game_performance_UI("individual_game_performance"))
                    ),
                    tabPanel(value  = "Head Movement", id = "HeadMove", HTML("Head Movement<br><small>Position and orientation of the head.</small>"),
-                            div(class="main-content", tags$p("Under Construction.."))
+                            div(class="main-content", individual_head_movement_UI("individual_head_movement"))
                    ),
                    tabPanel(value  = "Eye Movement", id = "EyeMove", HTML("Eye Movement<br><small>Hemispheric position and 3D gaze activity.</small>"),
                             div(class="main-content", tags$p("Under Construction.."))
