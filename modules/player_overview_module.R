@@ -156,7 +156,9 @@ player_overview <- function(input, output, session, df, meta) {
  
   output$play_history <- renderTable(colnames = FALSE,{
     validate(need(!is.na(meta()),"No meta data available."))
+    validate(need(!is.na(df()),"No data available."))
     req(!is.null(meta()))
+    req(!is.null(df()))
     
     profile_id = df()[1,]$ProfileID
     prev_sessions <- meta() %>% filter(ProfileID == profile_id) %>% select(Timestamp) 
