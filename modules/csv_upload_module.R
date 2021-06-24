@@ -31,7 +31,8 @@ csv_upload <- function(input, output, session) {
   observeEvent(input$actionSubmit, {
     load_files <- !is.null(input$fileMeta) && !is.null(input$fileEvent) && !is.null(input$fileSample)
     if (load_files) {
-      toReturn$df <-  LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
+      df <- LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
+      toReturn$df <- PreprocessGlobalData(df)
       toReturn$trigger <- toReturn$trigger + 1
     }
   })

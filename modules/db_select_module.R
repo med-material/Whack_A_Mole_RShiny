@@ -28,6 +28,7 @@ db_select <- function(input, output, session, connected) {
       SetSessionID(active_session)
     }
     active_df = RetreiveCurrentData()
+    active_df = PreprocessGlobalData(active_df)
     current_trigger = current_trigger + 1
   }
 
