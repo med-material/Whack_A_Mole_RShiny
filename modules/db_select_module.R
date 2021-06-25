@@ -66,7 +66,8 @@ db_select <- function(input, output, session, connected) {
       observeEvent(row$active, {
         req(row$trigger > 0)
         SetSessionID(row$sesid)
-        toReturn$df <<- RetreiveCurrentData()
+        new_df <- RetreiveCurrentData()
+        toReturn$df <<- PreprocessGlobalData(new_df)
         toReturn$session <<- row$sesid
         toReturn$trigger <<- toReturn$trigger + 1
         
