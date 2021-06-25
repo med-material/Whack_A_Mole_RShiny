@@ -13,6 +13,12 @@ individual_controller_movement_UI <- function(id) {
     ),
     fluidRow(
     plot_controller_density_UI(ns("controller_density"))
+    ),
+    fluidRow(
+      tags$h3("Motorspace Activity", class="page-header")
+    ),
+    fluidRow(
+      plot_controller_motorspace_UI(ns("controller_motorspace"))
     )
   )
 }
@@ -24,6 +30,7 @@ individual_controller_movement <- function(input, output, session, df, meta) {
     req(!is.na(df()))
     req(!is.null(df()))
     callModule(plot_controller_density, "controller_density", df)
+    callModule(plot_controller_motorspace, "controller_motorspace", df)
   })
 
   output$Lcontroller_lr <- renderUI({
