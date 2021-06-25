@@ -34,10 +34,10 @@ shinyUI(fluidPage(
                             div(class="main-content", individual_head_movement_UI("individual_head_movement"))
                    ),
                    tabPanel(value  = "Eye Movement", id = "EyeMove", HTML("Eye Movement<br><small>Hemispheric position and 3D gaze activity.</small>"),
-                            div(class="main-content", tags$p("Under Construction.."))
+                            div(class="main-content", individual_gaze_movement_UI("individual_gaze_movement"))
                    ),
                    tabPanel(value  = "Controller Movement", id = "ControllerMove", HTML("Controller Movement<br><small>Left and right controller activity.</small>"),
-                            div(class="main-content", tags$p("Under Construction.."))
+                            div(class="main-content", individual_controller_movement_UI("individual_controller_movement"))
                    ),
                    tabPanel(value  = "Time (X-axis)", id = "Timeline", HTML("Timeline<br><small>Replay the game from start to end.</small>"),
                             div(class="main-content", game_timeline_UI("timeline_panel"))

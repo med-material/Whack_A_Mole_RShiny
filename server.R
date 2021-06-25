@@ -16,6 +16,8 @@ shinyServer(function(input, output, session) {
   callModule(player_overview,"overview_panel", reactive(r$df), reactive(r$meta))
   callModule(individual_game_performance,"individual_game_performance", reactive(r$df), reactive(r$meta))
   callModule(individual_head_movement,"individual_head_movement", reactive(r$df), reactive(r$meta))
+  callModule(individual_gaze_movement, "individual_gaze_movement", reactive(r$df), reactive(r$meta))
+  callModule(individual_controller_movement, "individual_controller_movement", reactive(r$df), reactive(r$meta))
   callModule(game_timeline,"timeline_panel", reactive(r$df))
 
   auth = read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character"))
