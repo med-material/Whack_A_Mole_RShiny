@@ -33,14 +33,15 @@ vis_timeline <- function(df, col_time, col_event, col_eventtype, col_streams, ig
   if (col_eventtype == "") {
     col_eventtype = col_event
   }
-  
-  if (ignore_event != "") {
+
+  if (!is.null(ignore_event) && ignore_event != "") {
     df[[col_eventtype]] = as.character(df[[col_eventtype]])
     df[[col_eventtype]] <- ifelse(df[[col_eventtype]] %in% ignore_event, NA, df[[col_eventtype]])
   }
   
   # Convert timestamps to something we can use with scattergl.
   df$vis_t_time = df[[col_time]]
+  print(df$vis_t_time)
   if (!is.numeric(df$vis_t_time)) {
     df <- df %>% mutate(vis_t_time = as.POSIXlt(vis_t_time, format = "%Y-%m-%d %H:%M:%OS"))
     hoursecs = (df$vis_t_time$hour - df$vis_t_time[1]$hour) * 60 * 60
