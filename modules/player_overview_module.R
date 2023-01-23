@@ -111,7 +111,7 @@ player_overview <- function(input, output, session, df, meta) {
     if (nrow(controller_right) > 0) { controller = "Right" }
     if (nrow(controller_left) > 0 && nrow(controller_right) > 0) { controller = "Both" }
 
-    table <- tibble(x = c(), y = c())
+    table <- tibble(x = character(), y = character())
      table <- table %>% add_row(x = "Treatment Program:", y = as.character(df()[1,]$SessionProgram)) %>%
        add_row(x = "Duration:", y = as.character(df()[1,]$SessionDuration)) %>%
        add_row(x = "Eye-tracking:", y = as.character(eyetracking)) %>%
@@ -142,7 +142,7 @@ player_overview <- function(input, output, session, df, meta) {
     profileGroup = as.character(df()[1,]$ProfileGroup)
     if (is.na(profileGroup)) { profileGroup = "None"}
     
-    table <- tibble(x = c(), y = c())
+    table <- tibble(x = character(), y = character())
     table <- table %>% add_row(x = "Age:", y = as.character(df()[1,]$Age)) %>%
               add_row(x = "Gender:", y = as.character(df()[1,]$Gender)) %>%
               add_row(x = "Handedness:", y = as.character(df()[1,]$Handedness)) %>%
