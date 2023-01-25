@@ -110,10 +110,10 @@ player_overview <- function(input, output, session, df, meta) {
     if (nrow(controller_left) > 0) { controller = "Left" }
     if (nrow(controller_right) > 0) { controller = "Right" }
     if (nrow(controller_left) > 0 && nrow(controller_right) > 0) { controller = "Both" }
-
+  
     table <- tibble(x = character(), y = character())
-     table <- table %>% add_row(x = "Treatment Program:", y = as.character(df()[1,]$SessionProgram)) %>%
-       add_row(x = "Duration:", y = as.character(df()[1,]$SessionDuration)) %>%
+     table <- table %>% add_row(x = "Treatment Program:", y = as.character(meta()[1,]$SessionProgram)) %>%
+       add_row(x = "Duration:", y = as.character(meta()[1,]$SessionDuration)) %>%
        add_row(x = "Eye-tracking:", y = as.character(eyetracking)) %>%
        add_row(x = "Main Controller:", y = as.character(controller))
     
@@ -121,13 +121,13 @@ player_overview <- function(input, output, session, df, meta) {
   })
   
   output$player_header <- renderUI({
-    validate(need(!is.na(df()),"No session data available."))
-    req(!is.null(df()))
+    validate(need(!is.na(meta()),"No session data available."))
+    req(!is.null(meta()))
     
     ui <- HTML(paste(
       "<span style=\"font-size: 24px;\">",
       "<span class=\"fa fa-user fa-2x\" style=\"margin-right: 10px;\"></span>",
-      as.character(df()[1,]$ProfileName),
+      as.character(meta()[1,]$ProfileName),
       "</span>"
     ))
     return(ui)
@@ -143,13 +143,13 @@ player_overview <- function(input, output, session, df, meta) {
     if (is.na(profileGroup)) { profileGroup = "None"}
     
     table <- tibble(x = character(), y = character())
-    table <- table %>% add_row(x = "Age:", y = as.character(df()[1,]$Age)) %>%
-              add_row(x = "Gender:", y = as.character(df()[1,]$Gender)) %>%
-              add_row(x = "Handedness:", y = as.character(df()[1,]$Handedness)) %>%
+    table <- table %>% add_row(x = "Age:", y = as.character(meta()[1,]$Age)) %>%
+              add_row(x = "Gender:", y = as.character(meta()[1,]$Gender)) %>%
+              add_row(x = "Handedness:", y = as.character(meta()[1,]$Handedness)) %>%
               add_row(x = "InjuryDate:", y = as.character(injuryDate)) %>%
               add_row(x = "Group:", y = as.character(profileGroup)) %>%
-              add_row(x = "Participant ID:", y = as.character(df()[1,]$ParticipantID)) %>%
-              add_row(x = "Test ID:", y = as.character(df()[1,]$TestID))
+              add_row(x = "Participant ID:", y = as.character(meta()[1,]$ParticipantID)) %>%
+              add_row(x = "Test ID:", y = as.character(meta()[1,]$TestID))
                         
     return(table)
   })
