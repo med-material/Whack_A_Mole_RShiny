@@ -10,6 +10,12 @@ LoadFromFilePaths <- function(filePathMeta, filePathEvent, filePathSample) {
   return(dataset)
 }
 
+LoadSingleFile <- function(filePath) {
+  #print(filePath)
+  dataset <- read.csv(filePath, na.strings="NULL", sep=";")
+  return(dataset)
+}
+
 LoadFromDirectory <- function(dir, delim = ";", event = "Event", sample = "Sample", meta = "Meta") {
   #delim = ";"
   #dir = "Logs"

@@ -35,7 +35,7 @@ shinyServer(function(input, output, session) {
     req(csv_data$trigger > 0)
     r$df <- csv_data$df
     r$meta <- csv_data$df_meta
-    r$source <- min(as.character(csv_data$meta$SessionID, na.rm=T))
+    r$source <- min(as.character(csv_data$df_meta$SessionID, na.rm=T))
   })
   observeEvent(db_data$trigger, {
     req(db_data$trigger > 0)

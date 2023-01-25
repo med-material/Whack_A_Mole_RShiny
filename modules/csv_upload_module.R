@@ -32,7 +32,9 @@ csv_upload <- function(input, output, session) {
     load_files <- !is.null(input$fileMeta) && !is.null(input$fileEvent) && !is.null(input$fileSample)
     if (load_files) {
       df <- LoadFromFilePaths(input$fileMeta$datapath, input$fileEvent$datapath, input$fileSample$datapath)
+      meta <- LoadSingleFile(input$fileMeta$datapath)
       toReturn$df <- PreprocessGlobalData(df)
+      toReturn$df_meta <- meta
       toReturn$trigger <- toReturn$trigger + 1
     }
   })
