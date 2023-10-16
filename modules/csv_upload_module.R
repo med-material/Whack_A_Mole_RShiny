@@ -4,17 +4,18 @@ csv_upload_UI <- function(id) {
   list(
     HTML("<h3>CSV File Upload</h3>",
          "<p>Please add three files in here, which represent the
-         <strong>Event</strong>, <strong>Meta</strong> or <strong>Sample</strong>
+         <strong>Meta</strong>, <strong>Event</strong> or <strong>Sample</strong>
          CSV files.</p>"),
+    
     fileInput(
       ns("fileMeta"),
-      "Choose Meta CSV File", accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
+      "Choose Meta CSV File", placeholder = "Select Meta CSV file", accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
     fileInput(
       ns("fileEvent"),
-      "Choose Event CSV File", accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
+      "Choose Event CSV File", placeholder = "Select Event CSV file", accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
     fileInput(
       ns("fileSample"),
-      "Choose Sample CSV File", accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
+      "Choose Sample CSV File", placeholder = "Select Sample CSV file", accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
     actionButton(ns("actionSubmit"), "Submit"),
     textOutput(ns("statusText"))
   )
