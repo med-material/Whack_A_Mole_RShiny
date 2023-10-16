@@ -16,9 +16,11 @@ shinyUI(fluidPage(
     tags$header(fluidRow(
         # Input ----------------
         column(1,div(class="text-center",img(src='whack_icon.svg', id="whack-logo"))),
-        column(11,actionButton("DbButton", "Change Data"),
+        column(11,
+               actionButton("DbButton", "Change Data"),
                actionButton("CsvButton","Manual Upload"),
-               tags$div(class = "d-inline-block separated", data_selection_summary_UI("input_info"))
+               tags$div(class = "d-inline-block separated", data_selection_summary_UI("input_info"),),
+               tags$div(class = "d-inline-block separated", data_selection_filter_UI("input_filter"),)
         )
     )),
     navlistPanel(fluid= FALSE, widths=c(1,11), well = FALSE, id = "overall-nav",

@@ -70,6 +70,12 @@ footer {
   margin: 0 24px;
 }
 
+.selectize-control {
+    margin-bottom: 0px;
+    margin-top: 6px;
+    white-space:nowrap;
+}
+
 .shiny-output-error-vis {
 
     color: #888;
