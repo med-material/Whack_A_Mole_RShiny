@@ -11,7 +11,7 @@ options(shiny.fullstacktrace=TRUE)
 # Show milliseconds on timestamps
 options("digits.secs"=6)
 # Increase maximum file upload size for CSV files to 50MB.
-options(shiny.maxRequestSize=50*1024^2)
+options(shiny.maxRequestSize=100*1024^2)
 
 source("modules/csv_upload_module.R", local = T)
 source("modules/db_select_module.R", local = T)
