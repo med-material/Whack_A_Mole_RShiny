@@ -98,12 +98,20 @@ plot_scatter_timeline <- function(input, output, session, df) {
     df_vis <- df_vis %>% dplyr::mutate(mole_lr = "Center", 
                                        mole_lr = ifelse(MolePositionWorldX > 0, "Right", mole_lr),
                                        mole_lr = ifelse(MolePositionWorldX < 0, "Left", mole_lr))
+    
     moles_hit = df_vis %>% filter(Event %in% r$filter) %>% filter(mole_lr %in% r$lrfilter)
+    
+    
+    # Define consistent color palette
+    color_count = length(unique(moles_hit$Event)) # Add colors based on how many events there are.
+    my_palette=c('#337ab7','#949494','#e56c47')[1:color_count] # create my palette
+    my_palette = rev(my_palette) # reverse order to achieve consistent palette when filtering.
+    
     timetemplate <- plot_ly() %>%
       config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
       layout(dragmode = "pan", xaxis = list(tickformat="ms"))
     fig <- timetemplate %>%
-            add_trace(data=moles_hit, x =~GameTimeSpent, y =~MoleActivatedDuration,
+            add_trace(data=moles_hit, x =~GameTimeSpent, y =~MoleActivatedDuration, color=~Event,colors=my_palette,
             type='scattergl',mode='markers') %>%
             layout(
               yaxis=list(range=c(0,5), title=" ", titlefont = list(size=0)),
