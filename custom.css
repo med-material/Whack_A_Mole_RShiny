@@ -161,3 +161,55 @@ label {
     margin-bottom: 0;
     font-weight: normal;
 }
+
+/* Styling of Radio Buttons :horizontal */
+.radio-inline {
+    padding: 0;
+    padding-top: 2px;
+}
+
+.radio-inline + .radio-inline {
+  margin-left: 0;
+}
+
+.form-group input[type="radio"] {
+    display: none;
+}
+
+.form-group input[type="radio"] ~ span {
+    background: #f0f0f0;
+    border-radius: 3px;
+    color: #555;
+    border: 1px solid #f0f0f0;
+    padding: 0 3px;
+}
+
+.form-group input[type="radio"]:checked ~ span {
+    color: #fff;
+    background-color: #1e90ff;
+    border: 1px solid #1e90ff;
+}
+
+.form-group input[type="radio"]:hover ~ span {
+    border: 1px solid #333;
+    background-color: #87cefa;
+}
+
+.form-group input[type="radio"]:hover:not(:checked) ~ span {
+    color: #333;
+    border: 1px solid #777;
+    background-color: #c0c0c0;
+}
+
+.radio-inline span {
+    display: inline-block;
+    min-width: 40px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.form-group.radio > label {
+  display: none;
+}
