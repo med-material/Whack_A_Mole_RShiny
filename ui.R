@@ -61,5 +61,5 @@ shinyUI(fluidPage(
         )
     ),
     # Rest of Page ---------------------------------------------------------------
-    tags$footer()
+    #tags$footer()
 ))

@@ -213,3 +213,28 @@ label {
 .form-group.radio > label {
   display: none;
 }
+
+/* Adjust Slider to be same vertical height as other widgets */
+.contextual-toolbar {
+    /* Ensure consistent vertical alignment for all elements */
+    display: flex;
+    align-items: center;
+}
+
+/* Additional styles for sliderInput */
+.contextual-toolbar .slider-container {
+    flex: 1; /* Allow sliderInput to expand and fill remaining space */
+    margin-left: 24px; /* Adjust margin as needed */
+}
+
+/* Adjust slider handle color and size */
+.contextual-toolbar .slider-container .irs-single {
+    background-color: #1e90ff; /* Example color for slider handle */
+    width: 16px; /* Example width of slider handle */
+    height: 16px; /* Example height of slider handle */
+}
+
+/* Optional: Adjust slider track color */
+.contextual-toolbar .slider-container .irs-track {
+    background-color: #ccc; /* Example color for slider track */
+}
