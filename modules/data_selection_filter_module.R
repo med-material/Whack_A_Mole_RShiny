@@ -6,7 +6,7 @@ data_selection_filter_UI <- function(id) {
   column(12,
          tags$div(class=c('d-inline-block separated'), 
                   uiOutput(ns("data_selection_filter"))),
-         tags$div(class=c('contextual-toolbar d-inline-block separated'), 
+         tags$div(class=c('d-inline-block separated'), 
                   selectizeInput(ns("segmentFilter"), label = "Filter data..",
                                      choices = c("Loading.." = "All"),
                                      selected = c("All"), multiple = TRUE, width='400px',
