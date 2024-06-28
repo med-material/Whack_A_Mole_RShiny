@@ -48,10 +48,10 @@ plot_action_summary <- function(input, output, session, df) {
   observeEvent(df, {
     df_c <- df()
     countsH = df_c %>% group_by(HitHDirection) %>%
-      dplyr::summarize(Count = n()) %>%
+      dplyr::summarize(Count = length(unique(HitOrder,na.rm=T))) %>%
       pivot_wider(names_from = "HitHDirection", values_from="Count")
     countsV = df_c %>% group_by(HitVDirection) %>%
-      dplyr::summarize(Count = n()) %>%
+      dplyr::summarize(Count = length(unique(HitOrder,na.rm=T))) %>%
       pivot_wider(names_from = "HitVDirection", values_from="Count")
     
     leftlabel = paste0("\u2190 (",countsH[["Left"]]  %>% replace(is.null(.), "0"), ")")
