@@ -32,6 +32,9 @@ shinyUI(fluidPage(
                    tabPanel(value  = "Game Performance", id = "GamePerf", HTML("Game Performance<br><small>Successful hits, misses and speed.</small>"),
                             div(class="main-content", individual_game_performance_UI("individual_game_performance"))
                    ),
+                   tabPanel(value  = "Action Performance", id = "ActionPerf", HTML("Action Performance<br><small>Coarse and fine submovement.</small>"),
+                            div(class="main-content", individual_action_performance_UI("individual_action_performance"))
+                   ),
                    tabPanel(value  = "Head Movement", id = "HeadMove", HTML("Head Movement<br><small>Position and orientation of the head.</small>"),
                             div(class="main-content", individual_head_movement_UI("individual_head_movement"))
                    ),

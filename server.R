@@ -15,6 +15,7 @@ shinyServer(function(input, output, session) {
   callModule(data_selection_summary,"input_info", reactive(r$df_full))
   callModule(player_overview,"overview_panel", reactive(r$df), reactive(r$meta))
   callModule(individual_game_performance,"individual_game_performance", reactive(r$df), reactive(r$meta))
+  callModule(individual_action_performance,"individual_action_performance", reactive(r$df), reactive(r$meta))
   callModule(individual_head_movement,"individual_head_movement", reactive(r$df), reactive(r$meta))
   callModule(individual_gaze_movement, "individual_gaze_movement", reactive(r$df), reactive(r$meta))
   callModule(individual_controller_movement, "individual_controller_movement", reactive(r$df), reactive(r$meta))
