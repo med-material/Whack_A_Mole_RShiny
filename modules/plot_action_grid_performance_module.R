@@ -32,7 +32,7 @@ plot_action_grid_performance_UI <- function(id) {
 plot_action_grid_performance <- function(input, output, session, df) {
   ns <- session$ns
   
-  r <- reactiveValues(filter = c("Left","Right","Up","Down"), reset = 0,
+  r <- reactiveValues(filter = c("Left","Up"), reset = 0,
                       view = c("Combined"))
   
   observeEvent(input$directionFilter, {
@@ -68,7 +68,7 @@ plot_action_grid_performance <- function(input, output, session, df) {
     updateCheckboxGroupInput(session, label = NULL, inputId = "directionFilter", 
                              choiceNames = new_choices, 
                              choiceValues = new_choiceValues, 
-                             selected = c("Left"), inline = TRUE)
+                             selected = c("Left","Up"), inline = TRUE)
   })
   
   output$gridPlot <- renderPlotly({
@@ -107,10 +107,12 @@ plot_action_grid_performance <- function(input, output, session, df) {
     fig_w <- plot_ly() %>%
       config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
       layout(dragmode = "pan", showlegend = FALSE)
-    
+
     fig_w <- fig_w %>%
       add_trace(name="Spawn Points", data=WallMoles,
-                x=~x, y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32, color="#8d9096ff"),hoverinfo='none')
+                x=~c(x), y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32, color="#8d9096ff"),hoverinfo='none') %>%
+      add_trace(name="Wall Boundary", data=WS,
+                x=~c(x0,x0,x1,x1,x0), y=~c(y0,y1,y1,y0,y0), type='scatter',mode='lines',line=list(width=1,color="#8d9096ff"),hoverinfo='none')
 
     # Filter after we have established in the wall, so the whole wall is represented.
     D = D %>% filter(HitHDirection %in% r$filter, HitVDirection %in% r$filter)
