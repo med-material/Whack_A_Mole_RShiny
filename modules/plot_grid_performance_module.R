@@ -74,24 +74,41 @@ plot_grid_performance <- function(input, output, session, df) {
       layout(dragmode = "pan", showlegend = FALSE)
     
     df_vis <- df()
-
+    
+    WallMoles = df_vis %>% ungroup() %>% filter(Event %in% c("Mole Created","Mole Spawned")) %>% dplyr::summarise(
+      id = MoleId,
+      x = MolePositionWorldX,
+      y = MolePositionWorldY,
+    ) %>% dplyr::distinct() %>% na.omit(.)
+    
     # Create wall background
-    col_count = df_vis %>% filter(!is.na(WallColumnCount)) %>% select(WallColumnCount)
-    row_count = df_vis %>% filter(!is.na(WallRowCount)) %>% select(WallRowCount)
-    Wall_moles <- expand.grid(1:tail(col_count, n=1)[,1], 1:tail(row_count, n=1)[,1]) %>%
-      dplyr::rename(x = Var1, y = Var2)
+    #col_count = df_vis %>% filter(!is.na(WallColumnCount)) %>% select(WallColumnCount)
+    #row_count = df_vis %>% filter(!is.na(WallRowCount)) %>% select(WallRowCount)
+    #Wall_moles <- expand.grid(1:tail(col_count, n=1)[,1], 1:tail(row_count, n=1)[,1]) %>%
+    #  dplyr::rename(x = Var1, y = Var2)
+    
+    WS = df_vis %>% filter(Event == "CountDown 0") %>% head(1) %>%
+      summarize(x0 = last(WallBoundsXMin),
+                y0 = last(WallBoundsYMin),
+                x1 = last(WallBoundsXMax),
+                y1 = last(WallBoundsXMax),
+                width = last(WallBoundsXMax) -last(WallBoundsXMin),
+                height = last(WallBoundsYMax) -last(WallBoundsYMin))
     
     fig <- vistemplate %>%
-      add_trace(name="Spawn Points", data=Wall_moles,
-                x=~x, y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32),hoverinfo='none')
+      add_trace(name="Spawn Points", data=WallMoles,
+                x=~c(x), y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32, color="#8d9096ff"),hoverinfo='none') %>%
+      add_trace(name="Wall Boundary", data=WS,
+                x=~c(x0,x0,x1,x1,x0), y=~c(y0,y1,y1,y0,y0), type='scatter',mode='lines',line=list(width=1,color="#8d9096ff"),hoverinfo='none')
 
+    
     
     # Create filtered dataset based on user selection
     df_moles = df_vis %>% filter(Event %in% r$filter)
-    
+    browser()
     wall_perf = df_moles %>%
-      group_by(MoleId) %>% dplyr::summarise(MoleIndexX = first(MoleIndexX),
-                                            MoleIndexY = first(MoleIndexY),
+      group_by(MoleId) %>% dplyr::summarise(x = first(MolePositionWorldX),
+                                            y = first(MolePositionWorldY),
                                             speed = mean(MoleActivatedDuration, na.rm=T))
     
     # Define custom color scale
@@ -101,10 +118,10 @@ plot_grid_performance <- function(input, output, session, df) {
     if (nrow(wall_perf) > 0) {
       fig <- fig %>%
         add_trace(name="Valid Moles", data=wall_perf,
-                x=~MoleIndexX, y=~MoleIndexY, type='scatter', mode='markers',
+                x=~x, y=~y, type='scatter', mode='markers',
                 marker=list(size=32, color=~speed,colorscale=mole_scale)) %>%
         add_trace(name="Valid Moles", data=wall_perf,
-                  x=~MoleIndexX, y=~MoleIndexY, type='scatter', mode='text',
+                  x=~x, y=~y, type='scatter', mode='text',
                   text=~sprintf("%.2f",speed), textfont = list(color = '#000000', size = 8))
     }
     
