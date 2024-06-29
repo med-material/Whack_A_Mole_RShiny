@@ -105,7 +105,7 @@ plot_grid_performance <- function(input, output, session, df) {
     
     # Create filtered dataset based on user selection
     df_moles = df_vis %>% filter(Event %in% r$filter)
-    browser()
+    
     wall_perf = df_moles %>%
       group_by(MoleId) %>% dplyr::summarise(x = first(MolePositionWorldX),
                                             y = first(MolePositionWorldY),
@@ -126,7 +126,7 @@ plot_grid_performance <- function(input, output, session, df) {
     }
     
     fig <- fig %>%
-      layout(yaxis=list(titlefont = list(size=0), title=" "), xaxis=list(titlefont = list(size=0), title=" "))
+      layout(yaxis=list(zeroline=F,titlefont = list(size=0), title=" "), xaxis=list(zeroline=F,titlefont = list(size=0), title=" "))
     
     return(fig)
   })

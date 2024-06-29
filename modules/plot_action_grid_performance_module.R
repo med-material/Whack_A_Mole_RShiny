@@ -181,7 +181,7 @@ plot_action_grid_performance <- function(input, output, session, df) {
     }
     
     fig <- fig_w %>%
-      layout(yaxis=list(titlefont = list(size=0), title=" "), xaxis=list(titlefont = list(size=0), title=" "))
+      layout(yaxis=list(zeroline=F,titlefont = list(size=0), title=" "), xaxis=list(zeroline=F,titlefont = list(size=0), title=" "))
     
     return(fig)
   })
