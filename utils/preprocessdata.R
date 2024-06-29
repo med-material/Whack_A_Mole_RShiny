@@ -78,7 +78,7 @@ PreprocessGlobalData <- function(df) {
                                 TRUE ~ "Horisontal")
     )
   
-  
-  
+  # important to ungroup everything once preprocessing is over.
+  D = D %>% ungroup()
   return(D)
 }
