@@ -11,7 +11,7 @@ player_overview_UI <- function(id) {
              tags$h3("Session Info"),
              tableOutput(ns("session_info"))
              ),
-      column(3,
+      column(4,
              tags$h3("Session Performance"),
              fluidRow(column(6,uiOutput(ns("moles_whacked"))),
                       column(6,uiOutput(ns("mole_speed"))),
@@ -23,7 +23,7 @@ player_overview_UI <- function(id) {
              tags$h3("Player Characteristics"),
              tableOutput(ns("profile_info"))
       ),
-      column(3,
+      column(4,
              tags$h3("Play History"),
              tableOutput(ns("play_history"))
       ),
@@ -85,7 +85,7 @@ player_overview <- function(input, output, session, df, meta) {
     
     ui <- HTML(paste(
       "<p style='text-align:left;'>",
-      "<span style='font-size: 220%;'>",
+      "<span style='font-size: 180%;'>",
       speed_text,
       "</span>",
       "<br>",
