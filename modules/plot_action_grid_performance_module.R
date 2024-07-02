@@ -10,7 +10,7 @@ plot_action_grid_performance_UI <- function(id) {
     fluidRow(
       tags$div(class='contextual-toolbar', 
          checkboxGroupInput(ns("directionFilter"), label = "Travel Directions",
-                            choices = c("\u2190" = "Left","\u2192" = "Right","\u2191" = "Up","\u2193" = "Down"),
+                            choices = c("\u2190" = "Left","\u2192" = "Right","\u2191" = "Up","\u2193" = "Down", ""),
                             selected = c("Left", "Up"), inline = TRUE),
          radioButtons(ns("viewFilter"), label = " ",
                       choices = c("Lines", "Trajectories"),
@@ -113,9 +113,17 @@ plot_action_grid_performance <- function(input, output, session, df) {
                 x=~c(x), y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32, color="#8d9096ff"),hoverinfo='none') %>%
       add_trace(name="Wall Boundary", data=WS,
                 x=~c(x0,x0,x1,x1,x0), y=~c(y0,y1,y1,y0,y0), type='scatter',mode='lines',line=list(width=1,color="#8d9096ff"),hoverinfo='none')
-
+    
+    f = r$filter
+    f = c(f,ifelse(any(f == "Left"), "Horisontal",""))
+    f = c(f,ifelse(any(f == "Right"), "Horisontal",""))
+    f = c(f,ifelse(any(f == "Up"), "Vertical",""))
+    f = c(f,ifelse(any(f == "Down"), "Vertical",""))
+    
+    
     # Filter after we have established in the wall, so the whole wall is represented.
-    D = D %>% filter(HitHDirection %in% r$filter, HitVDirection %in% r$filter)
+    D = D %>% filter(HitHDirection %in% f, HitVDirection %in% f)
+    
     #browser()
     
     Moles = D %>% group_by(HitOrder) %>% filter(Event %in% c("Hit End")) %>% dplyr::summarise(
@@ -131,6 +139,9 @@ plot_action_grid_performance <- function(input, output, session, df) {
      x = RightControllerLaserPosWorldX,
      y = RightControllerLaserPosWorldY,
     ) %>% select(HitOrder,order,x,y) %>% na.omit(.)
+    
+    # Ensure no coordinates go beyond wall boundaries. When they do it is most likely due to glitching.
+    MoleLinesTraj = MoleLinesTraj %>% filter(x < WS$x1, x > WS$x0, y < WS$y1, y > WS$y0)
     
     MoleLinesTraj = D %>% group_by(HitOrder) %>% dplyr::summarise(
       order = 2,

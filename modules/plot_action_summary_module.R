@@ -146,14 +146,19 @@ plot_action_summary <- function(input, output, session, df) {
     D = D %>% rowid_to_column()
     # create action analysis
     #browser()
-    
     # summarise performace across all actions
     
     #Debug
     #D %>% filter(Event %in% c("Mole Spawned","Mole Hit","Pointer Hover Begin","Pointer Hover End","Hit End","Hit Begin")) %>% select(HitVDirection,HitHDirection,MoleStartPositionX,MoleEndPositionX,Timestamp, Event,MoleId,MoleIdStart,MoleIdToHit, HitOrder, PatternSegmentLabel) %>% view()
     
-    D = D %>% filter(HitHDirection %in% r$filter, HitVDirection %in% r$filter)
+    f = r$filter
+    f = c(f,ifelse(any(f == "Left"), "Horisontal",""))
+    f = c(f,ifelse(any(f == "Right"), "Horisontal",""))
+    f = c(f,ifelse(any(f == "Up"), "Vertical",""))
+    f = c(f,ifelse(any(f == "Down"), "Vertical",""))
     
+    D = D %>% filter(HitHDirection %in% f, HitVDirection %in% f)
+    validate(need(nrow(D %>% filter(Event == "Sample",!is.na(HitOrder))) > 0, "Trajectory samples needed to visualize.."), errorClass = "vis")
     # Create filtered dataset based on user selection
     #df_moles = df_vis %>% filter(Event %in% r$filter)
     
@@ -185,7 +190,6 @@ plot_action_summary <- function(input, output, session, df) {
     ####
     # Speed Calculations and Trajectory
     ####
-    
     Di = D %>% filter(Event=="Sample", !is.na(HitOrder)) %>% group_by(HitOrder) %>%
       dplyr::summarise(
         #Event = unique(Event),
@@ -222,8 +226,12 @@ plot_action_summary <- function(input, output, session, df) {
       viewmode = r$view,
       viewmode = case_when(viewmode == "Left-vs-Right" ~ HitHDirection,
                            viewmode == "Up-vs-Down" ~ HitVDirection,
-                           TRUE ~ "Combined")
-    )
+                           TRUE ~ "Combined"),
+      # remove horisontal/vertical from viewmode.
+      viewmode = ifelse(viewmode %in% c("Horisontal","Vertical"),NA,viewmode)
+    ) %>% filter(!is.na(viewmode))
+    
+    validate(need(nrow(Di) > 0, "Trajectory samples needed to visualize.."), errorClass = "vis")
     
     Di = Di %>% group_by(viewmode) %>% dplyr::mutate(
       timestamp_mean = mean(timestamp_rel_max)
