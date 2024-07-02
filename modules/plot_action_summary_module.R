@@ -158,6 +158,11 @@ plot_action_summary <- function(input, output, session, df) {
     f = c(f,ifelse(any(f == "Down"), "Vertical",""))
     
     D = D %>% filter(HitHDirection %in% f, HitVDirection %in% f)
+    
+    # Filter out HitOrders smaller than 2.
+    D = D %>% group_by(HitOrder) %>% dplyr::summarise(n_hitcount = n()) %>% right_join(D) %>% filter(n_hitcount > 1) %>% select(-n_hitcount)
+    
+    browser()
     validate(need(nrow(D %>% filter(Event == "Sample",!is.na(HitOrder))) > 0, "Trajectory samples needed to visualize.."), errorClass = "vis")
     # Create filtered dataset based on user selection
     #df_moles = df_vis %>% filter(Event %in% r$filter)
