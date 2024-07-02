@@ -162,7 +162,7 @@ plot_action_summary <- function(input, output, session, df) {
     # Filter out HitOrders smaller than 2.
     D = D %>% group_by(HitOrder) %>% dplyr::summarise(n_hitcount = n()) %>% right_join(D) %>% filter(n_hitcount > 1) %>% select(-n_hitcount)
     
-    browser()
+    
     validate(need(nrow(D %>% filter(Event == "Sample",!is.na(HitOrder))) > 0, "Trajectory samples needed to visualize.."), errorClass = "vis")
     # Create filtered dataset based on user selection
     #df_moles = df_vis %>% filter(Event %in% r$filter)
@@ -192,6 +192,7 @@ plot_action_summary <- function(input, output, session, df) {
     #D %>% filter(!is.na(HitOrder)) %>% pull(ControllerHoverTarget_ms) %>% hist(.)
     
     
+    validate(need(is.POSIXct(max(D$Timestamp)), "Trajectory samples needed to visualize.."), errorClass = "vis")
     ####
     # Speed Calculations and Trajectory
     ####
@@ -205,7 +206,7 @@ plot_action_summary <- function(input, output, session, df) {
         movement_time = timestampmax-timestampmin,
         hertz = 1 / as.numeric(movement_time),
         time_delta = 0.01, # every row is now 10ms
-        timestamp_interp = seq(timestampmin, timestampmax, by=0.01),
+        timestamp_interp = seq(timestampmin, timestampmin, by=0.01),
         RightControllerPosWorldX = approx(Timestamp, RightControllerPosWorldX, xout = timestamp_interp)$y,
         RightControllerPosWorldY = approx(Timestamp, RightControllerPosWorldY, xout = timestamp_interp)$y,
         RightControllerLaserPosWorldX = approx(Timestamp, RightControllerLaserPosWorldX, xout = timestamp_interp)$y,
