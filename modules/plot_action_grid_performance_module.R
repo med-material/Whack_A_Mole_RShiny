@@ -15,6 +15,9 @@ plot_action_grid_performance_UI <- function(id) {
          radioButtons(ns("viewFilter"), label = " ",
                       choices = c("Lines", "Trajectories"),
                       selected = c("Lines"), inline = TRUE),
+         radioButtons(ns("controllerFilter"), label = "Choose Controller",
+                      choices = c("Left Hand" = "Left","Right Hand" = "Right"),
+                      selected = c("Right"), inline = TRUE),
          #sliderInput("range", "Time ", min = 0, max = 50, value = 0, step = 10),
          # todo: use a slider to control which action we are currently seeing - limit the number of actions shown at a time to 6-7 fx.
          # include also an option to show all actions at once (off by default)
@@ -43,6 +46,10 @@ plot_action_grid_performance <- function(input, output, session, df) {
     r$view <- input$viewFilter
   })
   
+  observeEvent(input$controllerFilter, {
+    r$controller <- input$controllerFilter
+  })
+  
   observeEvent(input$resetPlot, {
     r$reset = r$reset + 1
   })
@@ -69,6 +76,17 @@ plot_action_grid_performance <- function(input, output, session, df) {
                              choiceNames = new_choices, 
                              choiceValues = new_choiceValues, 
                              selected = c("Left","Up"), inline = TRUE)
+    
+    controllers = na.omit(unique(df_c$ControllerNameHit))
+    if (length(controllers) > 1) {
+      shinyjs::show("controllerFilter")
+      updateCheckboxGroupInput(session, label = NULL, inputId = "controllerFilter", 
+                               selected = "Right", inline = TRUE)
+    } else {
+      shinyjs::hide("controllerFilter")
+      updateCheckboxGroupInput(session, label = NULL, inputId = "controllerFilter", 
+                               selected = controllers, inline = TRUE)
+    }
   })
   
   output$gridPlot <- renderPlotly({
@@ -80,39 +98,14 @@ plot_action_grid_performance <- function(input, output, session, df) {
     
 
     D <- df()
-
-    # Create wall background
     
-    # Use "CountDown 0" to detect state of game before it begins.
-    W = D %>% filter(Event == "CountDown 0") %>% head(1) %>%
-      summarize(x = c(unique(WallBoundsXMin),unique(WallBoundsXMin), unique(WallBoundsXMax), unique(WallBoundsXMax),unique(WallBoundsXMin)),
-                y = c(unique(WallBoundsYMin),unique(WallBoundsYMax), unique(WallBoundsYMax), unique(WallBoundsYMin),unique(WallBoundsYMin)))
-    
-    WS = D %>% filter(Event == "CountDown 0") %>% head(1) %>%
-      summarize(x0 = last(WallBoundsXMin),
-                y0 = last(WallBoundsYMin),
-                x1 = last(WallBoundsXMax),
-                y1 = last(WallBoundsXMax),
-                width = last(WallBoundsXMax) -last(WallBoundsXMin),
-                height = last(WallBoundsYMax) -last(WallBoundsYMin))
-    
-    
-    WallMoles = D %>% ungroup() %>% filter(Event %in% c("Mole Created","Mole Spawned")) %>% dplyr::summarise(
-      id = MoleId,
-      x = MolePositionWorldX,
-      y = MolePositionWorldY,
-    ) %>% dplyr::distinct() %>% na.omit(.)
-    
-    
-    fig_w <- plot_ly() %>%
-      config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
-      layout(dragmode = "pan", showlegend = FALSE)
-
-    fig_w <- fig_w %>%
-      add_trace(name="Spawn Points", data=WallMoles,
-                x=~c(x), y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32, color="#8d9096ff"),hoverinfo='none') %>%
-      add_trace(name="Wall Boundary", data=WS,
-                x=~c(x0,x0,x1,x1,x0), y=~c(y0,y1,y1,y0,y0), type='scatter',mode='lines',line=list(width=1,color="#8d9096ff"),hoverinfo='none')
+    WS = D %>% filter(HitOrder == min(HitOrder,na.rm=T), Event=="Hit Begin") %>%
+      dplyr::summarize(x0 = last(WallBoundsXMin),
+                       y0 = last(WallBoundsYMin),
+                       x1 = last(WallBoundsXMax),
+                       y1 = last(WallBoundsXMax),
+                       width = last(WallBoundsXMax) -last(WallBoundsXMin),
+                       height = last(WallBoundsYMax) -last(WallBoundsYMin))
     
     f = r$filter
     f = c(f,ifelse(any(f == "Left"), "Horisontal",""))
@@ -123,9 +116,24 @@ plot_action_grid_performance <- function(input, output, session, df) {
     
     # Filter after we have established in the wall, so the whole wall is represented.
     D = D %>% filter(HitHDirection %in% f, HitVDirection %in% f)
+    D = D %>% filter(ControllerNameHit %in% r$controller)
     
-    #browser()
+    WallMoles = D %>% ungroup() %>% filter(Event %in% c("Mole Created","Mole Spawned")) %>% dplyr::summarise(
+      id = MoleId,
+      x = MolePositionWorldX,
+      y = MolePositionWorldY,
+    ) %>% dplyr::distinct() %>% na.omit(.)
+
+    fig_w <- plot_ly() %>%
+      config(scrollZoom = TRUE, displaylogo = FALSE, modeBarButtonsToRemove = c("select2d","hoverCompareCartesian", "toggleSpikelines","toImage", "sendDataToCloud", "editInChartStudio", "lasso2d", "drawclosedpath", "drawopenpath", "drawline", "drawcircle", "eraseshape", "autoScale2d", "hoverClosestCartesian","toggleHover", "")) %>%
+      layout(dragmode = "pan", showlegend = FALSE)
     
+    fig_w <- fig_w %>%
+      add_trace(name="Spawn Points", data=WallMoles,
+                x=~c(x), y=~y, type='scatter',mode='markers',symbol=I('o'),marker=list(size=32, color="#8d9096ff"),hoverinfo='none') %>%
+      add_trace(name="Wall Boundary", data=WS,
+                x=~c(x0,x0,x1,x1,x0), y=~c(y0,y1,y1,y0,y0), type='scatter',mode='lines',line=list(width=1,color="#8d9096ff"),hoverinfo='none')
+        
     Moles = D %>% group_by(HitOrder) %>% filter(Event %in% c("Hit End")) %>% dplyr::summarise(
       start_x = MoleStartPositionX,
       start_y = MoleStartPositionY,
@@ -136,8 +144,8 @@ plot_action_grid_performance <- function(input, output, session, df) {
     MoleLinesTraj = D %>% group_by(HitOrder) %>% filter(Event %in% c("Sample")) %>%
      mutate(
      order = 1,
-     x = RightControllerLaserPosWorldX,
-     y = RightControllerLaserPosWorldY,
+     x = ControllerLaserPosWorldX,
+     y = ControllerLaserPosWorldY,
     ) %>% select(HitOrder,order,x,y) %>% na.omit(.)
     
     # Ensure no coordinates go beyond wall boundaries. When they do it is most likely due to glitching.
@@ -169,7 +177,7 @@ plot_action_grid_performance <- function(input, output, session, df) {
       axref = 'x', ayref = 'y',
     )
     
-    #browser()
+    
     
     # Define custom color scale
     #mole_scale = list(c(0, 'rgba(77, 220, 32, 0.4)'), list(0.5,'rgba(242, 152, 11,0.4)'), list(1,'rgba(240, 77, 66,0.4)'))
@@ -192,7 +200,7 @@ plot_action_grid_performance <- function(input, output, session, df) {
     }
     
     fig <- fig_w %>%
-      layout(yaxis=list(zeroline=F,titlefont = list(size=0), title=" "), xaxis=list(zeroline=F,titlefont = list(size=0), title=" "))
+      layout(yaxis=list(range=c(WS$y0,WS$y1),zeroline=F,titlefont = list(size=0), title=" "), xaxis=list(range=c(WS$x0,WS$x1), zeroline=F,titlefont = list(size=0), title=" "))
     
     return(fig)
   })

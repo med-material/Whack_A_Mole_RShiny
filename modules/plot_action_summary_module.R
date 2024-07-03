@@ -17,6 +17,9 @@ plot_action_summary_UI <- function(id) {
         radioButtons(ns("viewFilter"), label = " ",
                                      choices = c("Combined", "Left-vs-Right","Up-vs-Down"),
                                      selected = c("Combined"), inline = TRUE),
+        radioButtons(ns("controllerFilter"), label = "Choose Controller",
+                           choices = c("Left Hand" = "Left","Right Hand" = "Right"),
+                           selected = c("Right"), inline = TRUE),
       )
     ),
     fluidRow(class="vis-plot",
@@ -29,15 +32,18 @@ plot_action_summary <- function(input, output, session, df) {
   ns <- session$ns
   
   r <- reactiveValues(filter = c("Left","Right","Up","Down"), reset = 0,
-                      view = c("Combined"))
+                      view = c("Combined"), controller=c("Right Hand"))
   
   observeEvent(input$directionFilter, {
     r$filter <- input$directionFilter
   })
   
   observeEvent(input$viewFilter, {
-    
     r$view <- input$viewFilter
+  })
+  
+  observeEvent(input$controllerFilter, {
+    r$controller <- input$controllerFilter
   })
   
   observeEvent(input$resetPlot, {
@@ -66,10 +72,28 @@ plot_action_summary <- function(input, output, session, df) {
                              choiceNames = new_choices, 
                              choiceValues = new_choiceValues, 
                              selected = c("Left","Right","Up","Down"), inline = TRUE)
+    
+    controllers = na.omit(unique(df_c$ControllerNameHit))
+    if (length(controllers) > 1) {
+      shinyjs::show("controllerFilter")
+      updateCheckboxGroupInput(session, label = NULL, inputId = "controllerFilter", 
+                               selected = "Right", inline = TRUE)
+    } else {
+      shinyjs::hide("controllerFilter")
+      updateCheckboxGroupInput(session, label = NULL, inputId = "controllerFilter", 
+                               selected = controllers, inline = TRUE)
+    }
   })
   
   output$actionPlot <- renderPlotly({
     validate(need(df(), "Loading.."), errorClass = "vis")
+    
+    # Requirement for all action plots:
+    # 1) "Sample" Events = Trajectory data
+    # 2) ControllerLaserPosX
+    # 3) Valid Actions (HitOrder)
+    # 4) Checks should happen before and after applying data.
+    
     # Triggers plot reset when pressing button.
     if (r$reset > 0 ) {
       print(r$reset)
@@ -82,7 +106,7 @@ plot_action_summary <- function(input, output, session, df) {
     
     # Define function that will create the resulting plot
     plot_action <- function(df, speed_df) {
-      #browser()
+      
 
       m = length(unique(df$viewmode)) # m = more padding,based on number of views to show.
       # Bars only
@@ -145,7 +169,7 @@ plot_action_summary <- function(input, output, session, df) {
     D <- df()
     D = D %>% rowid_to_column()
     # create action analysis
-    #browser()
+    
     # summarise performace across all actions
     
     #Debug
@@ -159,11 +183,21 @@ plot_action_summary <- function(input, output, session, df) {
     
     D = D %>% filter(HitHDirection %in% f, HitVDirection %in% f)
     
+    D = D %>% filter(ControllerNameHit %in% r$controller)
+    
+    
     # Filter out HitOrders smaller than 2.
-    D = D %>% group_by(HitOrder) %>% dplyr::summarise(n_hitcount = n()) %>% right_join(D) %>% filter(n_hitcount > 1) %>% select(-n_hitcount)
+    D = D %>% group_by(HitOrder) %>% filter(!is.na(ControllerLaserPosWorldX)) %>% dplyr::summarise(n_hitcount = n()) %>% right_join(D)
     
     
-    validate(need(nrow(D %>% filter(Event == "Sample",!is.na(HitOrder))) > 0, "Trajectory samples needed to visualize.."), errorClass = "vis")
+    validate(
+      need(all(is.finite(D$Timestamp)), "Trajectory samples needed to visualize.."),
+      need(any(!is.na(D$Timestamp)), "Trajectory samples needed to visualize.."),
+      need(nrow(D %>% filter(Event == "Sample",!is.na(HitOrder))) > 0, "There must be at least one valid group"),
+      errorClass = "vis"
+    )
+    
+    #D %>% filter(HitOrder == 5) %>% select(Framecount.Event,Timestamp, Event,ControllerPosWorldX,ControllerPosWorldY,ControllerHover,HitOrder,MoleId,ControllerLaserPosWorldX,ControllerLaserPosWorldY) %>% view()
     # Create filtered dataset based on user selection
     #df_moles = df_vis %>% filter(Event %in% r$filter)
     
@@ -179,6 +213,7 @@ plot_action_summary <- function(input, output, session, df) {
       ControllerHoverTarget_ms = ControllerHoverTarget_ms * 1000
     )
     
+    
     D = D %>% group_by(HitOrder) %>% dplyr::mutate(
       flag = ifelse(any(Event == "Pointer Hover End"), min(rowid[Event == "Pointer Hover End"],na.rm=T),NA),
       leave_time = case_when(rowid == flag ~ Timestamp),
@@ -190,15 +225,14 @@ plot_action_summary <- function(input, output, session, df) {
     # Debug
     #D %>% filter(Event %in% c("Mole Spawned","Mole Hit","Pointer Hover Begin","Pointer Hover End","Hit End","Hit Begin")) %>% select(ControllerLeaveTarget_ms,ControllerHoverTarget_ms,rowid,Timestamp,hover_time,hit_time,leave_time,start_time,Event,MoleId,MoleIdStart,MoleIdToHit, HitOrder, PatternSegmentLabel) %>% view()      
     #D %>% filter(!is.na(HitOrder)) %>% pull(ControllerHoverTarget_ms) %>% hist(.)
+      
     
-    
-    validate(need(is.POSIXct(max(D$Timestamp)), "Trajectory samples needed to visualize.."), errorClass = "vis")
     ####
     # Speed Calculations and Trajectory
     ####
-    Di = D %>% filter(Event=="Sample", !is.na(HitOrder)) %>% group_by(HitOrder) %>%
+    Di = D %>% filter(Event=="Sample", !is.na(HitOrder),!is.na(Timestamp)) %>% group_by(HitOrder) %>%
       dplyr::summarise(
-        #Event = unique(Event),
+        Eventcount = length(Event),
         HitHDirection = unique(HitHDirection),
         HitVDirection = unique(HitVDirection),
         timestampmin = min(Timestamp),
@@ -206,11 +240,11 @@ plot_action_summary <- function(input, output, session, df) {
         movement_time = timestampmax-timestampmin,
         hertz = 1 / as.numeric(movement_time),
         time_delta = 0.01, # every row is now 10ms
-        timestamp_interp = seq(timestampmin, timestampmin, by=0.01),
-        RightControllerPosWorldX = approx(Timestamp, RightControllerPosWorldX, xout = timestamp_interp)$y,
-        RightControllerPosWorldY = approx(Timestamp, RightControllerPosWorldY, xout = timestamp_interp)$y,
-        RightControllerLaserPosWorldX = approx(Timestamp, RightControllerLaserPosWorldX, xout = timestamp_interp)$y,
-        RightControllerLaserPosWorldY = approx(Timestamp, RightControllerLaserPosWorldY, xout = timestamp_interp)$y,
+        timestamp_interp = seq(timestampmin, timestampmax, by=0.01),
+        ControllerPosWorldX = approx(Timestamp, ControllerPosWorldX, xout = timestamp_interp)$y,
+        ControllerPosWorldY = approx(Timestamp, ControllerPosWorldY, xout = timestamp_interp)$y,
+        #ControllerLaserPosWorldX = approx(Timestamp, ControllerLaserPosWorldX, xout = timestamp_interp)$y,
+        #ControllerLaserPosWorldY = approx(Timestamp, ControllerLaserPosWorldY, xout = timestamp_interp)$y,
         HeadCameraRotEulerX = approx(Timestamp, HeadCameraRotEulerX, xout = timestamp_interp)$y,
         HeadCameraRotEulerY = approx(Timestamp, HeadCameraRotEulerY, xout = timestamp_interp)$y,
         HeadCameraRotEulerZ = approx(Timestamp, HeadCameraRotEulerZ, xout = timestamp_interp)$y,
@@ -218,8 +252,8 @@ plot_action_summary <- function(input, output, session, df) {
         ControllerLeaveTarget_ms = unique(ControllerLeaveTarget_ms),
       ) %>% dplyr::rename(Timestamp = timestamp_interp) %>% group_by(HitOrder) %>% rowid_to_column() %>%
       dplyr::mutate(
-        dx = c(diff(RightControllerPosWorldX),NA),
-        dy = c(diff(RightControllerPosWorldY),NA),
+        dx = c(diff(ControllerPosWorldX),NA),
+        dy = c(diff(ControllerPosWorldY),NA),
         dt = 0.01,
         speed = sqrt(dx^2 + dy^2) / dt,
         timestampi_max = max(Timestamp),
@@ -237,7 +271,11 @@ plot_action_summary <- function(input, output, session, df) {
       viewmode = ifelse(viewmode %in% c("Horisontal","Vertical"),NA,viewmode)
     ) %>% filter(!is.na(viewmode))
     
-    validate(need(nrow(Di) > 0, "Trajectory samples needed to visualize.."), errorClass = "vis")
+    validate(
+      need(nrow(Di > 0), "Trajectory samples needed to visualize.."),
+      need(any(!is.na(Di$speed)), "Trajectory samples needed to visualize.."),
+      errorClass = "vis"
+    )
     
     Di = Di %>% group_by(viewmode) %>% dplyr::mutate(
       timestamp_mean = mean(timestamp_rel_max)
@@ -248,7 +286,7 @@ plot_action_summary <- function(input, output, session, df) {
         timestamp_rel_norm_ms = timestamp_rel_norm * 1000
       )
     # Debug
-    #D %>% filter(HitOrder == 3) %>% select(Framecount.Event,Timestamp, Event, RightControllerPosWorldX,RightControllerPosWorldY,ControllerHover,HitOrder,MoleId,RightControllerLaserPosWorldX,RightControllerLaserPosWorldY) %>% view()
+    #D %>% filter(HitOrder == 5) %>% select(Framecount.Event,Timestamp, Event, RightControllerPosWorldX,RightControllerPosWorldY,ControllerHover,HitOrder,MoleId,RightControllerLaserPosWorldX,RightControllerLaserPosWorldY) %>% view()
     # Plot speed curve   
     #plot_ly() %>% add_trace(name="real",data = Di %>% filter(HitOrder %in% c(10)), type='scatter',mode='markers', 
     #                          x=~timestamp_rel, y=~speed) %>%
@@ -259,7 +297,7 @@ plot_action_summary <- function(input, output, session, df) {
 
     
     S = Di %>% group_by(viewmode, HitOrder) %>% dplyr::summarise(
-      #duration = sum(time_delta, na.rm=T),
+      duration2 = sum(time_delta, na.rm=T),
       duration = max(timestamp_rel),
       duration_ms = duration * 1000,
       speed_data = list(data.frame('speed'=speed,'time'=timestamp_rel_norm_ms)),
@@ -309,8 +347,8 @@ plot_action_summary <- function(input, output, session, df) {
     # 1: we use medians for our aproximators for now because there are some pretty big outliers.
     # 2: Subtract Controller hover target from peak speed to target
     S_a = S %>% group_by(viewmode) %>% dplyr::summarise(
-      ControllerLeaveTarget_ms = median(ControllerLeaveTarget_ms), #1
-      ControllerHoverTarget_ms = median(ControllerHoverTarget_ms), #1
+      ControllerLeaveTarget_ms = median(ControllerLeaveTarget_ms,na.rm=T), #1
+      ControllerHoverTarget_ms = median(ControllerHoverTarget_ms,na.rm=T), #1
       duration_ms = mean(duration_ms),
       trajectory = list(data.frame(create_speed_trajectory(speed_data))),
       peak_speed = max(data.frame(trajectory)$speed,na.rm=T),
