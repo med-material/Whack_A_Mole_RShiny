@@ -13,9 +13,9 @@ plot_grid_performance_UI <- function(id) {
         checkboxGroupInput(ns("moleFilter"), label = " ",
                                      choices = c("Hits" = "Mole Hit", "Misses" = "Mole Expired","Distractors" = "Fake Mole Hit"),
                                      selected = c("Mole Hit"), inline = TRUE),
-        #checkboxGroupInput(ns("leftRightFilter"), label = " ",
-        #                             choices = c("Left", "Right", "Center"),
-        #                             selected = c("Left", "Right", "Center"), inline = TRUE),
+        radioButtons(ns("controllerFilter"), label = "Choose Controller",
+                     choices = c("Left Hand" = "Left","Right Hand" = "Right"),
+                     selected = c("Right"), inline = TRUE),
       )
     ),
     fluidRow(class="vis-plot",
@@ -36,7 +36,9 @@ plot_grid_performance <- function(input, output, session, df) {
     r$filter <- input$moleFilter
     
   })
-  
+  observeEvent(input$controllerFilter, {
+    r$controller <- input$controllerFilter
+  })
   observeEvent(input$resetPlot, {
     r$reset = r$reset + 1
   })
@@ -60,6 +62,16 @@ plot_grid_performance <- function(input, output, session, df) {
                              choiceNames = new_choices, 
                              choiceValues = new_choiceValues, 
                              selected = "Mole Hit", inline = TRUE)
+    controllers = na.omit(unique(df_c$ControllerNameHit))
+    if (length(controllers) > 1) {
+      shinyjs::show("controllerFilter")
+      updateCheckboxGroupInput(session, label = NULL, inputId = "controllerFilter", 
+                               selected = "Right", inline = TRUE)
+    } else {
+      shinyjs::hide("controllerFilter")
+      updateCheckboxGroupInput(session, label = NULL, inputId = "controllerFilter", 
+                               selected = controllers, inline = TRUE)
+    }
   })
   
   output$gridPlot <- renderPlotly({
@@ -75,6 +87,7 @@ plot_grid_performance <- function(input, output, session, df) {
     
     df_vis <- df()
     
+    df_vis = df_vis %>% filter(ControllerNameHit %in% r$controller)
     WallMoles = df_vis %>% ungroup() %>% filter(Event %in% c("Mole Created","Mole Spawned")) %>% dplyr::summarise(
       id = MoleId,
       x = MolePositionWorldX,
@@ -87,13 +100,13 @@ plot_grid_performance <- function(input, output, session, df) {
     #Wall_moles <- expand.grid(1:tail(col_count, n=1)[,1], 1:tail(row_count, n=1)[,1]) %>%
     #  dplyr::rename(x = Var1, y = Var2)
     
-    WS = df_vis %>% filter(Event == "CountDown 0") %>% head(1) %>%
-      summarize(x0 = last(WallBoundsXMin),
-                y0 = last(WallBoundsYMin),
-                x1 = last(WallBoundsXMax),
-                y1 = last(WallBoundsXMax),
-                width = last(WallBoundsXMax) -last(WallBoundsXMin),
-                height = last(WallBoundsYMax) -last(WallBoundsYMin))
+    WS = df_vis %>% filter(HitOrder == min(HitOrder,na.rm=T), Event=="Hit Begin") %>%
+      dplyr::summarize(x0 = last(WallBoundsXMin),
+                       y0 = last(WallBoundsYMin),
+                       x1 = last(WallBoundsXMax),
+                       y1 = last(WallBoundsXMax),
+                       width = last(WallBoundsXMax) -last(WallBoundsXMin),
+                       height = last(WallBoundsYMax) -last(WallBoundsYMin))
     
     fig <- vistemplate %>%
       add_trace(name="Spawn Points", data=WallMoles,
