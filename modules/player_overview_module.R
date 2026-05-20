@@ -102,7 +102,7 @@ player_overview <- function(input, output, session, df, meta) {
     req(!is.null(df()))
     
     eyetracking = "Not Available"
-    if (length(unique(df()$GazeConfidence, na.rm=T)) > 1) { eyetracking = "On" }
+    if (length(unique(df()$WorldGazeHitPositionX, na.rm=T)) > 1) { eyetracking = "On" }
     
     controller = "Unknown"
     controller_left = df() %>% filter(MotorSpaceName == "MotorSpaceL")
