@@ -21,8 +21,8 @@ shinyServer(function(input, output, session) {
   callModule(individual_controller_movement, "individual_controller_movement", reactive(r$df), reactive(r$meta))
   callModule(game_timeline,"timeline_panel", reactive(r$df))
 
-  auth = read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character"))
-  connected = ConnectToServer(auth)
+  #auth = read.csv("credentials.csv", header=TRUE,sep=",", colClasses=c("character"))
+  connected = FALSE #ConnectToServer(auth)
   if (!connected) {
     r$df <- NA
     shinyjs::disable("DbButton")
