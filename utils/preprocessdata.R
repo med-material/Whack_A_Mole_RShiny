@@ -88,7 +88,7 @@ PreprocessGlobalData <- function(df) {
   # Create columns mapping any controller currently hitting things.
   ###
   D = D %>% ungroup() %>% dplyr::mutate(
-    ControllerNameHit = ifelse(ControllerNameHit == "Controller (left)", "Left",ControllerNameHit),
+    # ControllerNameHit = ifelse(ControllerNameHit == "Controller (left)", "Left",ControllerNameHit),
     ControllerNameHit = ifelse(ControllerNameHit == "Controller (right)", "Right",ControllerNameHit)
   )
   
@@ -110,7 +110,19 @@ PreprocessGlobalData <- function(df) {
     )
   
 
-  
+  ####
+  # Process gaze data from HTC Vive Vision Focus for separate eye into one combined average
+  ###
+  if ("GazeHitPosition0X" %in% colnames(df)) {
+    D = D %>% ungroup() %>% mutate(
+      WorldGazeHitPositionX = rowMeans(select(.,GazeHitPosition0X, GazeHitPosition1X), na.rm = TRUE),
+      WorldGazeHitPositionY = rowMeans(select(.,GazeHitPosition0Y, GazeHitPosition1Y), na.rm = TRUE),
+      WorldGazeHitPositionZ = rowMeans(select(.,GazeHitPosition0Z, GazeHitPosition1Z), na.rm = TRUE)
+      )
+    D$WorldGazeHitPositionX[is.nan(D$WorldGazeHitPositionX)] <- NA
+    D$WorldGazeHitPositionY[is.nan(D$WorldGazeHitPositionY)] <- NA
+    D$WorldGazeHitPositionZ[is.nan(D$WorldGazeHitPositionZ)] <- NA
+  }
   # important to ungroup everything once preprocessing is over.
   D = D %>% ungroup()
   return(D)
